@@ -38,15 +38,16 @@
 .col-form-label{min-width: 100px;}
 
 /* 라벨 */
-.form-group label{font-size: 14px;}
-.form-group input{font-size: 13px;}
-.form-group button{height:30px;font-size: 12px;}
+.form-group{padding:0;}
+.form-group label{font-size: 14px;padding:0;margin:0;
+  display: flex;  align-items: center;}
+.form-group input{font-size: 14px;}
+.form-group textarea{font-size: 14px;}
+.form-group button{font-size: 12px;}
 .form-control{height:30px;font-size:12px;}
-.input-group-append{height: 30px;}
 .dxbs-fixed-header-content{font-size:14px;}
 .dbt-try-now-link{padding:15px;font-size:14px;}
 .nav-item {font-size:14px;}
-
 
 /* 팝업 버튼 */
 .modal-footer button{height:30px;font-size: 12px;}
@@ -66,7 +67,13 @@ table input{font-size: 13px;}
 .input_redcheck{background:#fff url("../Content/images/input_redcheck.png") 0 0 no-repeat;}
 
 /* 체크박스 위치값 */
-.form-check-input {  vertical-align: middle;}
+.form-check-input {
+  position: absolute;
+  margin-top: 0.3rem;
+  margin-left: -1.25rem;
+}
+.form-check .form-check-input {height: 1.5em;}
+.form-check label {width:30px;height: 30px;}
 
 /* 카드형 폼 타이틀 */
 .card-header{font-size:14px;font-weight: bold;}
