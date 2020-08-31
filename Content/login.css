@@ -3,9 +3,15 @@ html,body{height:100%;margin:0;}
 .login_bg_wrap{background: #fff;width:1280px;margin:auto;height:100%;min-height: 100%;padding-bottom:100px;}
 .login_bg_top{flex:1;display:flex;height: 80px;background:#6E6E6E;}
 .logo{width:200px;height:23px;margin-left:30px;margin-top:30px;background:url("./images/logo-white.png") 0 0 no-repeat;}
-.login_bg{flex:1;background:url("./img/l_img0_3.png1") 0 0 no-repeat;
-background-position: center center;background-size: cover;background-repeat: no-repeat;
-width:100%;height:100%; }
+
+#login_bg{
+	flex:1;width:100%;height:100%;
+	background:url("./img/l_img0_3.png") 0 0 no-repeat;
+	background-position: center center;
+	background-size: cover;
+	background-repeat: no-repeat;
+ }
+
 .login_box{position:relative;left:0;top:0;width:400px;height:100%;background-color: rgba( 0, 0, 0, 0.5 );padding:30px;}
 .login_bg_bottom{width:100%;background:#6E6E6E;margin-top:100px;height:100px;position:absolute;bottom:0;max-width: 1280px;}
 .loginBtn{background:#000;color:#fff;width:100%;border:0;height:50px;}
@@ -16,10 +22,9 @@ width:100%;height:100%; }
 .login_box .writeInput input{height: 40px;}
 .login_box .dxbs-combobox{margin-bottom:10px;}
 .login_box .form-control{margin-bottom:10px;}
-.login_box .form-check {display: block;margin-bottom:20px;}
-.login_box .form-check-input{position: static;}
-.login_box .badge{color:#fff; height: 10px;}
-.bottom_text{color:#fff;font-size:14px;padding:20px;}
+.login_box .form-check {margin:0;padding:0;display: block;margin-bottom:20px;}
+.login_box .form-check .form-check-input{margin:0;padding:0;height:1em;vertical-align: middle;}
+.login_box .badge{color:#fff;margin:0;padding:0;border-radius:0;}
 
 /* 로그인 인풋박스 */
 .login_box .dropdown-toggle::after { margin-left: 0em;border:0;}
@@ -27,9 +32,22 @@ width:100%;height:100%; }
 .login_box .dxbs-icon-ellipsis::before {display:none;}
 .login_box .form-control {border:0;}
 
+/* 푸터영역 */
+.login_bg_bottom{display:flex;}
+.bottom_text{flex:none;color:#fff;font-size:14px;margin:20px;}
+.bottom_right{margin-left:auto;padding-right:20px;}
+.logo2{ width:200px;height:23px;background: url("./images/logo-white.png") 0 0 no-repeat;
+margin-top:30px;margin-left:auto;}
+.copyright{color:#fff;font-size:12px;text-align:right;}
+
 
 @media (max-width: 576px) {
 	.login_bg_wrap{width:100%;}
   .login_box {position: static;width:100%;padding:30px;}
+	.login_bg_bottom{flex-direction: column;}
+	.bottom_text{margin:0 auto;margin-top:10px;}
 	.login_bg_bottom{max-width: 100%;}
+	.logo2{margin:0;margin-left:auto;margin-top:15px;margin-bottom:5px;}
+	.bottom_right{margin:0 auto;width:100%;}
+	.copyright{font-size:10px;margin:0;padding:0;}
 }
