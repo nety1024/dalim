@@ -71,7 +71,12 @@ table input{font-size: 14px;}
   margin-left: -1.25rem;
 }
 .form-check .form-check-input {height: 1.5em;}
-.form-check label {width:30px;height: 30px;}
+/*.form-check label {width:30px;height: 30px;}*/
+.form-check label {
+    height: 30px;
+    direction: rtl;
+    unicode-bidi: embed;
+}
 
 /* 카드형 폼 타이틀 */
 .card-header{font-size:14px;font-weight: bold;}
