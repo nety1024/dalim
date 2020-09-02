@@ -22,9 +22,6 @@ a:hover {color: #5096cd;}
 /* 라디우스 삭제 */
   .form-control, .btn, .card, .dropdown-toggle::after { border-radius:0; }
 
-/* 페이지 타이틀 */
-.dbt-pcontent-title {font-size:16px;font-weight: bold;}
-
 /* 폼 간격 */
 .form-group{margin:0;margin-bottom:5px;}
 
@@ -71,7 +68,6 @@ table input{font-size: 14px;}
   margin-left: -1.25rem;
 }
 .form-check .form-check-input {height: 1.5em;}
-/*.form-check label {width:30px;height: 30px;}*/
 .form-check label {
     height: 30px;
     direction: rtl;
@@ -99,9 +95,6 @@ nav .dbt-icon:hover{color:#5096cd;}
 
 /* 왼쪽 메뉴 선택상태 색상변경 */
 .nav-pills .nav-link.active,.nav-pills .show > .nav-link {  color: #fff;  background-color: #5096cd;}
-
-/* 페이지 타이틀 */
-.dbt-pcontent-title {font-size: 1rem;padding-top: 0.8rem;height: 2.2rem;margin-left:30px;}
 
 /* 아이콘 버튼 */
 .fas{font-size:14px;}
@@ -182,10 +175,12 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 .dbt-header-user-info.btn.dropdown-toggle { padding: 0;}
 .dbt-header-user-info, .dbt-header-user-info img {height: 3rem; border-radius: 0!important;}
 .dbt-header-user-info img {padding: 0.5rem; width: 3rem;}
-.dbt-header-user-info i{color:#5096cd;margin-right:5px;}
-.dbt-header-user-info span { font-size:14px;margin-right:5px;}
+.dbt-header-user-info span.image{color: #5096cd;margin-right:5px;}
+.dbt-header-user-info span {font-size:14px;}
 .btn-toolbar>.btn-group{padding:10px;}
-.rounded-circle i{font-size:16px;font-style:normal;}
+.rounded-circle span{font-size:16px;font-style:normal;}
+
+/* 페이지 타이틀 */
 
 
 @media (max-width: 940px) {

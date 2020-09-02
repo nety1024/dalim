@@ -1,0 +1,196 @@
+@charset "utf-8";
+@import url("fontawesome.css");
+
+@media (min-width: 1200px),(min-width: 960px) {}
+a {color: #5096cd;  }
+a:hover {color: #5096cd;}
+
+/* 다림칼라 */
+.bg_darimblue{background:#5096cd;}
+.bg_darimlgray{background:#beb9b9;}
+.bg_darimdgray{background:#6E6E6E;}
+.bg_gray{background:#f5f5f5;}
+.bg_red {background:#dc3545;}
+.bg_blue {background: #007bff;}
+.red {color:#dc3545;}
+.blue {color: #007bff;}
+
+/* 로고 이미지 영역 */
+.logo_img{background: url("../Content/images/logo.png") 0 0 no-repeat;width:200px;height:23px;margin-top:14px;}
+.dbt-header-title {padding: 1rem 0;}
+
+/* 라디우스 삭제 */
+  .form-control, .btn, .card, .dropdown-toggle::after { border-radius:0; }
+
+/* 폼 간격 */
+.form-group{margin:0;margin-bottom:5px;}
+
+/* 폼 전체 백그라운드 */
+.dxbs-fl{radius:0; padding-top:10px;}
+
+/* 라벨 너비 */
+.col-form-label{min-width: 100px;}
+
+/* 그리드영역: 폼그룹, 라벨, 인풋 */
+.form-group{padding:0;}
+.form-group .form-group{margin:0;}
+.form-group label{font-size: 14px;padding:0;margin:0;
+  display: flex;  align-items: center;}
+.form-group input{font-size: 14px;height: 30px;}
+.form-group textarea{font-size: 14px;}
+.form-group button{font-size: 12px;}
+.form-control{height:30px;font-size:14px;}
+.dxbs-fixed-header-content{font-size:14px;}
+.dbt-try-now-link{padding:15px;font-size:14px;}
+.nav-item {font-size:14px;}
+.nomargin{margin:0;}
+
+/* 팝업 버튼 */
+.modal-footer button{height:30px;font-size: 12px;}
+
+/* 그리드 폰트조절 */
+.f13{font-size: 13px;}
+.f14{font-size: 14px;}
+.bold{font-weight: bold;}
+.normal{font-weight: normal;}
+table{font-size: 14px;}
+td{font-size: 14px;}
+table input{font-size: 14px;}
+
+/* 필수입력 input */
+.check_red {position:absolute;top:0;width:0px;height:0px;border-bottom:8px solid rgba(0, 0, 0, 0); border-left:8px solid red;}
+.input_redcheck{background:#fff url("../Content/images/input_redcheck.png") 0 0 no-repeat;}
+
+/* 체크박스 위치값 */
+.form-check-input {
+  position: absolute;
+  margin-top: 0.3rem;
+  margin-left: -1.25rem;
+}
+.form-check .form-check-input {height: 1.5em;}
+.form-check label {
+    height: 30px;
+    direction: rtl;
+    unicode-bidi: embed;
+}
+
+/* 카드형 폼 타이틀 */
+.card-header{font-size:14px;font-weight: bold;}
+
+/* 왼쪽메뉴 감싸는 영역 전체 너비 */
+.lnav_width{width:240px;}
+
+/* 왼쪽 메뉴 리스트 너비 */
+.dbt-treeview{max-width: 240px;}
+
+/* 왼쪽 메뉴 타이틀 */
+.bg-primary {background-color: #5096cd!important;}
+
+/* 왼쪽 메뉴 */
+nav ul>li> a{color:#000;}
+nav .dbt-icon{color:#b2b3b7;}
+nav .dbt-icon:hover{color:#5096cd;}
+.nav-link .active{color: #5096cd;}
+.mr5 {margin-right:5px;}
+
+/* 왼쪽 메뉴 선택상태 색상변경 */
+.nav-pills .nav-link.active,.nav-pills .show > .nav-link {  color: #fff;  background-color: #5096cd;}
+
+/* 아이콘 버튼 */
+.fas{font-size:14px;}
+.btn-secondary:hover {  color: #fff;  background-color: #5096cd;  border-color: #5096cd;}
+
+/* 인풋박스 아이콘 위치 조절 */
+.input-group-append .dropdown-toggle::after {margin-left: 0em;border:0;}
+.input-group-append .btn{line-height: 1;}
+
+/*메뉴바*/
+.dbt-icon-menu{}
+/*햄버거 메뉴*/
+.ham_menu{border:0;margin-right:auto;}
+.ham_menu:hover{border:0;}
+.ham_menu span{font-size:24px;color:#000;}
+.btn-outline-secondary {
+  color: #000;
+  background-color: #fff;
+  border-color: #fff;
+}
+.btn-outline-secondary:hover {
+  color: #000;
+  background-color: #fff;
+  border-color: #23fff;
+}
+.btn-outline-secondary:not(:disabled):not(.disabled):active, .btn-outline-secondary:not(:disabled):not(.disabled).active,
+.show > .btn-outline-secondary.dropdown-toggle {
+  color: #000;
+  background-color: #fff;
+  border-color: #23fff;
+}
+
+/* LNB 타이틀(카테고리) */
+.lnb_title{display:block;width:100%;height:50px;text-align:left;padding-left:2em;
+  line-height: 50px;
+  font-weight: bold;color:#000;margin-top:10px;border-bottom:2px solid #5096cd;margin-bottom:10px;}
+.lnb_title:hover{color:#000;}
+.lnb_title i{margin-right:5px;color:#5096cd;}
+
+
+/* 세로그림자 */
+.shadow_l {box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.03) !important;}
+
+/* 플로팅 버튼 */
+.btn-floating {
+    color: #fff;
+    padding: 0;
+    width: 55.5px; height: 55.5px;
+    display: inline-block;
+    outline: 0;
+    border: none;
+    text-decoration: none;
+    background: #5096cd;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  }
+.btn-floating:hover { background: #2b6fa5;color:#fff;}
+.btn-floating div { padding: 0; margin: 18px 0;}
+.btn-floating div i{font-size:20px;}
+
+/* 페이지네이션 */
+.page-link {padding: 0.2rem 0.5rem;margin-left: -1px;line-height: 1.25;font-size:14px;color:#6E6E6E;height:24px;}
+.page-link span{font-size:12px;}
+.page-item:first-child .page-link {border-top-left-radius: 0rem;border-bottom-left-radius: 0rem;}
+.page-item:last-child .page-link {border-top-right-radius: 0rem;border-bottom-right-radius: 0rem;}
+.page-link:hover {color: #5096cd;}
+.page-item.active .page-link {  background-color: #5096cd;  border-color: #5096cd;}
+.badge-primary {  background-color: #5096cd;}
+a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
+.form-control-plaintext{font-size:14px;}
+.dbt-gridview > .card > .card-body:last-child {padding: 0.1rem 1.25rem;}
+
+/* 로그인 아이콘 영역 일단보이게 */
+.dxbs-toolbar-adaptive.dxbs-loading > .btn-toolbar > .btn-group:not(.dxbs-ta-ag){visibility: visible;}
+
+/* 로그인 아이콘 영역 */
+.dbt-header-user-info.btn.dropdown-toggle { padding: 0;}
+.dbt-header-user-info, .dbt-header-user-info img {height: 3rem; border-radius: 0!important;}
+.dbt-header-user-info img {padding: 0.5rem; width: 3rem;}
+.dbt-header-user-info span.image{color: #5096cd;margin-right:5px;}
+.dbt-header-user-info span {font-size:14px;}
+.btn-toolbar>.btn-group{padding:10px;}
+.rounded-circle span{font-size:16px;font-style:normal;}
+
+/* 페이지 타이틀 */
+.page_title_bar{background:#5096cd; padding-right:0.8rem; background:green;} /* mr-0 빼야 꽉 채워짐 */
+.dbt-pcontent-title {font-weight: bold; font-size: 1rem;padding-top: 0.8rem;height: 2.2rem;}
+.dbt-pcontent-title>span{margin-left:20px; color:#fff;background: blue;}
+.form-inline .form-group button {background:#255e8b;border:1px solid #255e8b;margin-bottom: 0.25rem !important;margin-right:0.25rem;
+background: red;
+}
+.form-inline .form-group button:hover {background:#000;border:1px solid #000;}
+
+
+@media (max-width: 940px) {
+  .ham_menu{display:block;height:40px;width:40px;}
+  .ham_menu i{font-size:40px;}
+}
