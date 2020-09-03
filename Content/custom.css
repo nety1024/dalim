@@ -78,10 +78,10 @@ table input{font-size: 14px;}
 .card-header{font-size:14px;font-weight: bold;}
 
 /* 왼쪽메뉴 감싸는 영역 전체 너비 */
-.lnav_width{width:240px;}
+.lnav_width{width:240px; }
 
 /* 왼쪽 메뉴 리스트 너비 */
-.dbt-treeview{max-width: 240px;}
+.dbt-treeview{max-width: 240px; }
 
 /* 왼쪽 메뉴 타이틀 */
 .bg-primary {background-color: #5096cd!important;}
@@ -128,12 +128,9 @@ nav .dbt-icon:hover{color:#5096cd;}
 }
 
 /* LNB 타이틀(카테고리) */
-.lnb_title{display:block;width:100%;height:50px;text-align:left;padding-left:2em;
-  line-height: 50px;
-  font-weight: bold;color:#000;margin-top:10px;border-bottom:2px solid #5096cd;margin-bottom:10px;}
+.lnb_title{display:block;width:100%;text-align:left;padding-left:2em;font-weight: bold;color:#000;border-bottom:2px solid #5096cd;padding-top: 0.8rem;padding-bottom:0.6rem;}
 .lnb_title:hover{color:#000;}
 .lnb_title i{margin-right:5px;color:#5096cd;}
-
 
 /* 세로그림자 */
 .shadow_l {box-shadow: 0.5rem 0.5rem 1rem rgba(0, 0, 0, 0.03) !important;}
@@ -169,7 +166,9 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 .dbt-gridview > .card > .card-body:last-child {padding: 0.1rem 1.25rem;}
 
 /* 로그인 아이콘 영역 일단보이게 */
+/*
 .dxbs-toolbar-adaptive.dxbs-loading > .btn-toolbar > .btn-group:not(.dxbs-ta-ag){visibility: visible;}
+*/
 
 /* 로그인 아이콘 영역 */
 .dbt-header-user-info.btn.dropdown-toggle { padding: 0;}
@@ -181,9 +180,17 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 .rounded-circle span{font-size:16px;font-style:normal;}
 
 /* 페이지 타이틀 */
-
+.page_title_bar{background:#5096cd; padding-right:0.8rem;} /* mr-0 빼야 꽉 채워짐 */
+.dbt-pcontent-title {font-weight: bold; font-size: 1rem;padding-top: 0.8rem;height: 2.2rem;}
+.dbt-pcontent-title>span{margin-left:20px; color:#fff;}
+.form-inline .form-group button {background:#255e8b;border:1px solid #255e8b;margin-bottom: 0.25rem !important;margin-right:0.25rem;}
+.form-inline .form-group button:hover {background:#000;border:1px solid #000;}
 
 @media (max-width: 940px) {
   .ham_menu{display:block;height:40px;width:40px;}
   .ham_menu i{font-size:40px;}
+}
+
+@media (max-width: 375px) {
+.page_title_bar{padding:0;}
 }
