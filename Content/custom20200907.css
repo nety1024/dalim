@@ -185,14 +185,21 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 .form-inline .form-group button {background:#255e8b;border:1px solid #255e8b;margin-bottom: 0.25rem !important;margin-right:0.25rem;}
 .form-inline .form-group button:hover {background:#000;border:1px solid #000;}
 
-/* 간격조절용 css */
+/* 대쉬보드 */
+.dashboard_title{padding:0;padding:10px;padding-left:15px;}
+.dashbox_title{background:#5096cd;text-align: center;color:#fff;padding:5px 0;font-size:14px;}
 .pd0{padding:0;}
 .pdlr5{padding-left:5px;padding-right:5px;}
 .pdlr10{padding-left:10px;padding-right:10px;}
 .mt20{margin-top:20px;}
+.white_box{background: #fff;border:1px solid #dee2e6; height: 80px;}
+.white_box .text1{font-size:22px;font-weight: bold;padding:10px 0 10px 15px;}
+.white_box .text2{text-align: right;font-size:14px;padding:0px 15px 10px 0;}
+.white_box .text3{font-size:28px;font-weight: bold; padding:18px 0;text-align: center;}
 
-/* 대쉬보드 */
-.dashbox_title2{text-align: center;color:#fff;padding:0;height:118px;width:30%;float:left;}
+/* 대쉬보드2 */
+.dashbox_title2{text-align: center;color:#fff;padding:0;height:118px;width:30%;float:left;padding-top:80px;}
+.dashbox_title2 span{font-size:14px;}
 .white_box1{background: #fff;border:1px solid #dee2e6; height: 120px;}
 .white_box2{padding:0; height: 120px;display:inline-block;width:70%;}
 .white_box2 .text1{font-size:22px;font-weight: bold;padding:10% 0 15px 15px;}
@@ -202,23 +209,30 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 .pending_text2{text-align: right;float:right;padding-right:10px;}
 
 /* 대시보드 칼라 */
-.dash_ico_d{background:#ff8764 url("../Content/images/ico_sack_d.png") 50% 50% no-repeat;}
-.dash_ico_m{background:#56bdde url("../Content/images/ico_sack_m.png") 50% 50% no-repeat;}
-.dash_ico_y{background:#b198dc url("../Content/images/ico_sack_y.png") 50% 50% no-repeat;}
-.dash_ico_p{background:#6dc7be url("../Content/images/ico_pending.png") 50% 50% no-repeat;}
-.samplecolor{background: #ff8764; }
-.samplecolor{background: #56bdde; }
-.samplecolor{background: #b198dc; }
-.samplecolor{background: #6dc7be; }
+.bg_mauve{background:#cd5150;}
+.bg_fuchsia{background:#cd518e;}
+.bg_purple{background:#bd51cd;}
+.bg_turquoise{background:#51c6cd;}
+.bg_teal{background:#5096cd;}
+.bg_cobalt{background:#5168cd;}
+.dash_ico_d{background:#cd5150 url("../Content/images/ico_sack_d.png") 50% 37% no-repeat;}
+.dash_ico_m{background:#cd518e url("../Content/images/ico_sack_m.png") 50% 37% no-repeat;}
+.dash_ico_y{background:#bd51cd url("../Content/images/ico_sack_y.png") 50% 37% no-repeat;}
+.dash_ico_pending{background:#5096cd url("../Content/images/ico_pending.png") 50% 37% no-repeat;}
+
 
 
 @media (max-width: 1024px) {
-  .white_box2 .text1{font-size:16px;font-weight: bold;padding:10% 0 15px 15px;}
+  .white_box .text1{font-size:16px;padding:5px;}
+  .white_box .text2{font-size:12px;padding:5px;}
+  .white_box2 .text1{font-size:18px;font-weight: bold;padding:10% 0 15px 15px;}
   .dashbox_title2 span{font-size:12px;}
 }
 @media (max-width: 940px) {
   .ham_menu{display:block;height:40px;width:40px;}
   .ham_menu i{font-size:40px;}
+  .white_box .text1{font-size:16px;padding:5px;}
+  .white_box .text2{font-size:12px;padding:5px;}
 }
 
 @media (max-width: 375px) {
