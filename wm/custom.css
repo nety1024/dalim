@@ -73,9 +73,7 @@ table input{font-size: 14px;}
     height: 30px;
     direction: rtl;
     unicode-bidi: embed;
-    background:green;
 }
-.form-check .badge {vertical-align: top;padding-top:10px;}
 
 /* 카드형 폼 타이틀 */
 .card-header{font-size:14px;font-weight: bold;}
@@ -235,9 +233,6 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 
 
 
-
-
-
 @media (max-width: 1024px) {
   .white_box1 .text1{padding:5px;font-size:20px;}
 }
@@ -251,5 +246,4 @@ a.badge-primary:hover, a.badge-primary:focus {  background-color: #5096cd;}
 }
 @media (max-width: 375px) {
 .page_title_bar{padding:0;}
-.dashboard_top .white_box, .dashboard_top .white_box2 {margin-bottom:10px;}
 }

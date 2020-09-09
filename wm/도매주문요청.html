@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html class="h-100 theme-light dbt-loading-process">
+
 <head>
 	<link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,23_138,1_74,1_75,1_68,1_69,1_70,1_73-eoual" />
 	<meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
-	<title>		다림웹영업시스템	</title>
-	<!--<link rel="stylesheet" href="../Content/DXR.css" />-->
+	<title> 다림웹영업시스템 </title>
+	<link rel="stylesheet" href="../Content/DXR.css" />
 	<link rel="shortcut icon" type="image/x-icon" href="../Content/images/favicon.png" />
 	<link rel="stylesheet" href="../Content/bootstrap.css" />
 	<link href="../Content/dbt-icons.css" rel="stylesheet" />
@@ -14,670 +15,6 @@
 	<script type="text/javascript" src="../Content/common.js" defer></script>
 	<script type="text/javascript" src="../Content/common_dbt.js" defer></script>
 	<script type="text/javascript" src="../Content/jquery-3.5.1.min.js"></script>
-	<script type="text/javascript">
-		function MenuButton_Click(s, e) {
-
-			// 검색
-			if (window['MainSearch'] != undefined && s == MainSearch) {
-
-				if (typeof pageSearchButton_Click === "function") {
-					e.processOnServer = pageSearchButton_Click();
-				}
-			}
-			// 신규
-			else if (window['MainNew'] != undefined && s == MainNew) {
-				if (typeof pageNewButton_Click === "function") {
-					e.processOnServer = pageNewButton_Click();
-				}
-			}
-			// 저장
-			else if (window['MainSave'] != undefined && s == MainSave) {
-
-				if (typeof pageSaveButton_Click === "function") {
-					e.processOnServer = pageSaveButton_Click();
-				}
-
-			}
-			// 삭제
-			else if (window['MainDelete'] != undefined && s == MainDelete) {
-				if (typeof pageDelButton_Click === "function") {
-					e.processOnServer = pageDelButton_Click();
-				}
-
-			}
-			// 취소
-			else if (window['MainCancel'] != undefined && s == MainCancel) {
-				if (typeof pageCancelButton_Click === "function") {
-					e.processOnServer = pageCancelButton_Click();
-				}
-
-			}
-			// 인쇄
-			else if (window['MainPrint'] != undefined && s == MainPrint) {
-				if (typeof pagePrintButton_Click === "function") {
-					pagePrintButton_Click();
-				}
-			}
-
-			// 엑셀
-			else if (window['MainExcelExport'] != undefined && s == MainExcelExport) {
-				if (typeof pageExcelExportButton_Click === "function") {
-					pageExcelExportButton_Click();
-				}
-			}
-
-			if (e.processOnServer) {
-				LoadingPanel.Show();
-			}
-
-		}
-
-		//textarea 외에 엔터키 방지
-		function captureReturnKey(e) {
-			if (e.keyCode == 13 || e.keyCode == 8) {
-
-				if (e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA") return false;
-			}
-
-		}
-	</script>
-	<script>
-		//<![CDATA[
-		var _ServerUrl = "http://222.110.75.206:80/";
-		//]]>
-	</script>
-	<script type="text/javascript">
-		//<![CDATA[
-		var strAjaxUrl = "/CM/CM_Ajax.aspx";
-
-		window.onload = function() {
-			window.setTimeout(function() {
-				InitNewData();
-			}, 1000);
-		}
-
-		function pageSearchButton_Click() {
-			return true;
-		}
-
-		function pageNewButton_Click() {
-			if (COMMON_MSGBOX("?", "등록중인 데이터가 삭제됩니다. 신규로 작성하시겠습니까?")) {
-				InitNewData();
-			}
-			return false;
-		}
-
-		function pageSaveButton_Click() {
-
-			if (!fnControlValidValue(cboORDER_ACCNT_TYPE_CD, "주문분류")) return false;
-			if (!fnControlValidValue(txtACCNT_ID, "거래처")) return false;
-			if (!fnControlValidValue(txtSALEEMPCD, "도매담당자")) return false;
-			if (!fnControlValidValue(dtDELI_DT, "출고요청일")) return false;
-			if (!fnControlValidValue(cboDELIVERY_TYPE_CD, "택배유형")) return false;
-			//if (!fnControlValidValue(txtDELI_ZIPCODE, "배송처")) return false;
-			//if (!fnControlValidValue(txtDELI_DETAIL, "배송주소(상세)")) return false;
-
-			try {
-				var indiciesGrd1 = grd1.batchEditApi.GetRowVisibleIndices(false);
-				var vORDQTY = 0;
-				var vSumORDQTY = 0;
-
-				for (var iRow = 0; iRow < indiciesGrd1.length; iRow++) {
-					var jRow = iRow + 1;
-					vORDQTY = toInt(grd1.batchEditApi.GetCellValue(indiciesGrd1[iRow], "ORDQTY"));
-
-					if (vORDQTY != null) {
-						vSumORDQTY = vSumORDQTY + vORDQTY;
-					}
-				}
-
-				if (vSumORDQTY <= 0) {
-					COMMON_MSGBOX("!", "수량이 입력되지 않았습니다.");
-					return false;
-				}
-
-				if (!grd1.batchEditApi.HasChanges()) {
-					COMMON_MSGBOX("!", "변경된 내용이 없습니다.");
-					return false;
-				}
-
-				if (COMMON_MSGBOX("?", "저장하시겠습니까?")) {
-					if (SaveData()) {
-						InitNewData();
-					}
-				}
-			} catch (error) {
-				COMMON_MSGBOX("!", error);
-				return false;
-			}
-
-			return false;
-		}
-
-		function pageDelButton_Click() {
-			return true;
-		}
-
-		function SaveData() {
-			var visibleIndices = grd1.batchEditApi.GetRowVisibleIndices(false);
-			var grd1_Array = [];
-
-			var obj = new Object();
-
-			obj.ACCNT_TYPE_CD = fnGetCTRLVal(cboORDER_ACCNT_TYPE_CD);
-			obj.ACCNT_ID = fnGetCTRLVal(txtACCNT_ID);
-			obj.ACCNT_SUB_ID = fnGetCTRLVal(txtACCNT_SUB_ID);
-			obj.REMARK1 = fnGetCTRLVal(txtREMARK1);
-			obj.DELI_TYPE = fnGetCTRLVal(cboDELI_TYPE);
-			obj.DELI_ZIPCODE = fnGetCTRLVal(txtDELI_ZIPCODE);
-			obj.DELI_ADDR = fnGetCTRLVal(txtDELI_ADDR);
-			obj.DELI_DETAIL = fnGetCTRLVal(txtDELI_DETAIL);
-			obj.DELI_TEL = fnGetCTRLVal(txtDELI_TEL);
-			obj.DELIVERY_TYPE_CD = fnGetCTRLVal(cboDELIVERY_TYPE_CD);
-			obj.SALEUSER = fnGetCTRLVal(txtSALEEMPCD);
-			obj.DELI_DT = fnGetCTRLVal(dtDELI_DT);
-
-			//저장할 디테일 데이터 Array
-			for (var i = 0; i < visibleIndices.length; i++) {
-				var iRow = visibleIndices[i];
-
-				var delRow = grd1.batchEditApi.IsDeletedRow(iRow);
-				var InsRow = grd1.batchEditApi.IsNewRow(iRow);
-				if (!delRow) {
-					grd1_Array.push({
-						PROD_ID: grd1.batchEditApi.GetCellValue(iRow, "PROD_ID"),
-						PRICE: grd1.batchEditApi.GetCellValue(iRow, "PRICE"),
-						PRICE_ROWID: grd1.batchEditApi.GetCellValue(iRow, "PRICE_ROWID"),
-						ORDQTY: grd1.batchEditApi.GetCellValue(iRow, "ORDQTY")
-					});
-				}
-			}
-
-			obj.D_DATAS = grd1_Array;
-
-			// 오브젝트를 JSON형식으로 변환
-			var objData = JSON.stringify(obj);
-
-			//데이터 저장
-
-			var RetVal = fnJQueryRetStr("WM_Ajax.aspx", "WM0020_Save", objData);
-
-			if (RetVal == "S") {
-				COMMON_MSGBOX("!", "저장되었습니다.");
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		function InitNewData() {
-
-			fnSetCTRLVal(cboORDER_ACCNT_TYPE_CD, "010"); // 직간납(010:직간납, 020:약국도매)
-			fnSetCTRLVal(txtWHORDNO, "");
-			if ("" == "") {
-				fnSetCTRLVal(txtACCNT_ID, "");
-				fnSetCTRLVal(txtACCNT_NM, "");
-				fnSetCTRLVal(spnUnreachAMT, 0);
-				fnSetCTRLVal(spnBalance, 0);
-				fnSetCTRLVal(txtSALEEMPCD, "");
-				fnSetCTRLVal(txtSALEEMPNM, "");
-			} else {
-				fnSetCTRLVal(txtACCNT_ID, "");
-				fnSetCTRLVal(txtACCNT_NM, "");
-
-				window.setTimeout(function() {
-					btnLoadBalance.DoClick();
-				}, 10);
-
-				txtACCNT_NM.SetEnabled(false);
-			}
-
-			fnSetCTRLVal(txtACCNT_SUB_ID, "");
-			fnSetCTRLVal(txtACCNT_SUB_NM, "");
-			fnSetCTRLVal(chkSAME, "N");
-			txtACCNT_SUB_NM.SetEnabled(true);
-
-			fnSetCTRLVal(txtREMARK1, "");
-			fnSetCTRLVal(dtDELI_DT, null);
-			fnSetCTRLVal(cboDELI_TYPE, "010"); // 배송지유형(010:주문거래처, 011:간납처)
-			fnSetCTRLVal(cboDELIVERY_TYPE_CD, "020"); // 택배유형(020:택배배송,040:내사수령)
-			fnSetCTRLVal(txtDELI_TEL, "");
-			fnSetCTRLVal(txtDELI_ZIPCODE, "");
-			fnSetCTRLVal(txtDELI_ADDR, "");
-			fnSetCTRLVal(txtDELI_DETAIL, "");
-
-			cboDELI_TYPE_ValueChanged(null, null);
-
-			grd1.PerformCallback("NewData");
-		}
-
-		function chkSAME_ValueChanged(s, e) {
-			var vSAME = chkSAME.GetValue();
-
-			if (vSAME == "Y") {
-				txtACCNT_SUB_ID.SetValue(txtACCNT_ID.GetValue());
-				txtACCNT_SUB_NM.SetValue(txtACCNT_NM.GetValue());
-				txtACCNT_SUB_NM.SetEnabled(false);
-			} else {
-				txtACCNT_SUB_ID.SetValue("");
-				txtACCNT_SUB_NM.SetValue("");
-				txtACCNT_SUB_NM.SetEnabled(true);
-			}
-
-			cboDELI_TYPE_ValueChanged(null, null);
-			window.setTimeout(function() {
-				btnLoadgrd1.DoClick();
-			}, 10);
-		}
-
-		function OnShowPopUp(s, e) {
-			var vNAME = "";
-			var vParam = "";
-			var vSender = "";
-
-			// s.name 앞부분에 다른 텍스트들이 잔뜩 붙어 있어서 떼어냄
-			if (s.name.indexOf("txt") > 0) {
-				vSender = s.name.substring(s.name.indexOf("txt"), s.name.length);
-			}
-
-			if (vSender == "txtACCNT_NM") { // 거래처
-				vNAME = txtACCNT_NM.GetText();
-				//CommonPopup_ACCNT("ACCNTNM", "2", vNAME, "", "txtACCNT_NM_ButtonClick_Result");
-
-				//var params = "ReturnMethod=txtACCNT_NM_ButtonClick_Result&pType=ACCNTNM&pSelTP=2&pValue=" + vNAME + "&pAccntId=" + "" + "&_OPENTYPE=POPUP";
-				//ERPOpenPopup("../CM/CM0010.aspx", params, 768, 650, false);
-
-				var obj = new Object();
-				var Array = [];
-
-				obj.pReturnMethod = "txtACCNT_NM_ButtonClick_Result";
-				obj.pType = "ACCNTNM";
-				obj.pSelTP = "2";
-				obj.pValue = vNAME;
-				obj.pAccntId = "";
-
-				var strJsonData = JSON.stringify(obj);
-				popCM0040AccntList.PerformCallback(strJsonData);
-
-			} else if (vSender == "txtACCNT_SUB_NM") { // 간납처
-				var vACCNT_ID = txtACCNT_ID.GetValue();
-				if (vACCNT_ID == "" || vACCNT_ID == null || vACCNT_ID == undefined || vACCNT_ID == NaN) {
-					COMMON_MSGBOX("!", "거래처를 먼저 선택하세요.");
-					txtACCNT_SUB_ID.SetValue("");
-					txtACCNT_SUB_NM.SetValue("");
-					return;
-				}
-				vNAME = txtACCNT_SUB_NM.GetText();
-
-				var obj = new Object();
-				var Array = [];
-
-				obj.pReturnMethod = "txtACCNT_SUB_NM_ButtonClick_Result";
-				obj.pType = "ACCNTNM";
-				obj.pSelTP = "3";
-				obj.pValue = vNAME;
-				obj.pAccntId = vACCNT_ID;
-
-				var strJsonData = JSON.stringify(obj);
-				popCM0040AccntList.PerformCallback(strJsonData);
-
-			} else if (vSender == "txtSALEEMPNM") { // 도매 담당자
-				vNAME = txtSALEEMPNM.GetText();
-				//vParam = "ReturnMethod=txtSALEEMPNM_ButtonClick_Result&pEmpNm=" + vNAME + "&_OPENTYPE=POPUP";
-				//ERPOpenPopup("../CM/CM0030.aspx", vParam, 768, 650, false);
-
-				var obj = new Object();
-				var Array = [];
-
-				obj.pReturnMethod = "txtSALEEMPNM_ButtonClick_Result";
-				obj.pEmpNm = vNAME;
-
-				var strJsonData = JSON.stringify(obj);
-				popCM0060List.PerformCallback(strJsonData);
-			}
-		}
-
-		function OnTextChanged(s, e) {
-			var varCode = s.GetText();
-			var vSender = "";
-
-			// s.name 앞부분에 다른 텍스트들이 잔뜩 붙어 있어서 떼어냄
-			if (s.name.indexOf("txt") > 0) {
-				vSender = s.name.substring(s.name.indexOf("txt"), s.name.length);
-			}
-
-			if (vSender == "txtACCNT_NM") { // 거래처
-				if (varCode == "") {
-					txtACCNT_ID.SetValue("");
-					txtACCNT_NM.SetValue("");
-					txtACCNT_SUB_ID.SetValue("");
-					txtACCNT_SUB_NM.SetValue("");
-					txtSALEEMPCD.SetValue("");
-					txtSALEEMPNM.SetValue("");
-					fnSetCTRLVal(spnUnreachAMT, 0);
-					fnSetCTRLVal(spnBalance, 0);
-
-					cboDELI_TYPE_ValueChanged(null, null);
-
-					window.setTimeout(function() {
-						btnLoadBalance.DoClick();
-					}, 10);
-				} else {
-					$.ajax({
-						type: "POST",
-						async: false,
-						url: strAjaxUrl,
-						data: {
-							requestType: "GetAccntBasicInfo",
-							SELTP: "2",
-							ACCNTNM: varCode,
-							ACCNTID: "",
-							VATNO: ""
-						},
-						dataType: "json",
-						success: function(data) {
-							if (data.ROW_CNT != 1) {
-								OnShowPopUp(s, e);
-							} else {
-								txtACCNT_ID.SetValue(data.ACCNT_ID);
-								txtACCNT_NM.SetValue(data.ACCNT_NM);
-								txtSALEEMPCD.SetValue(data.EMP_ID);
-								txtSALEEMPNM.SetValue(data.EMP_NM);
-
-								if (cboDELI_TYPE.GetValue() == "010") {
-									txtDELI_ZIPCODE.SetValue(data.DELI_ZIP);
-									txtDELI_ADDR.SetValue(data.DELI_ADDR);
-									txtDELI_DETAIL.SetValue(data.DELI_DETAIL);
-									txtDELI_TEL.SetValue(data.DELI_TEL);
-								}
-
-								window.setTimeout(function() {
-									btnLoadBalance.DoClick();
-								}, 10);
-							}
-						}
-					});
-				}
-			} else if (vSender == "txtACCNT_SUB_NM") { // 간납처
-				if (varCode == "") {
-					txtACCNT_SUB_ID.SetValue("");
-					txtACCNT_SUB_NM.SetValue("");
-
-					cboDELI_TYPE_ValueChanged(null, null);
-
-					window.setTimeout(function() {
-						btnLoadgrd1.DoClick();
-					}, 10);
-				} else {
-					var vACCNT_ID = txtACCNT_ID.GetValue();
-					if (vACCNT_ID == "" || vACCNT_ID == null || vACCNT_ID == undefined || vACCNT_ID == NaN) {
-						COMMON_MSGBOX("!", "거래처를 먼저 선택하세요.");
-						txtACCNT_SUB_ID.SetValue("");
-						txtACCNT_SUB_NM.SetValue("");
-						return;
-					}
-
-					$.ajax({
-						type: "POST",
-						async: false,
-						url: strAjaxUrl,
-						data: {
-							requestType: "GetAccntBasicInfo",
-							SELTP: "3",
-							ACCNTNM: varCode,
-							ACCNTID: vACCNT_ID,
-							VATNO: ""
-						},
-						dataType: "json",
-						success: function(data) {
-							if (data.ROW_CNT != 1) {
-								OnShowPopUp(s, e);
-							} else {
-								txtACCNT_SUB_ID.SetValue(data.ACCNT_ID);
-								txtACCNT_SUB_NM.SetValue(data.ACCNT_NM);
-
-								if (cboDELI_TYPE.GetValue() == "011") {
-									txtDELI_ZIPCODE.SetValue(data.DELI_ZIP);
-									txtDELI_ADDR.SetValue(data.DELI_ADDR);
-									txtDELI_DETAIL.SetValue(data.DELI_DETAIL);
-									txtDELI_TEL.SetValue(data.DELI_TEL);
-								}
-
-								window.setTimeout(function() {
-									btnLoadgrd1.DoClick();
-								}, 10);
-							}
-						}
-					});
-				}
-			} else if (vSender == "txtSALEEMPNM") { // 도매 담당자
-				if (varCode == "") {
-					txtSALEEMPCD.SetValue("");
-					txtSALEEMPNM.SetValue("");
-				} else {
-					$.ajax({
-						type: "POST",
-						async: false,
-						url: strAjaxUrl,
-						data: {
-							requestType: "GetEmpInfo",
-							EMPNM: varCode
-						},
-						dataType: "json",
-						success: function(data) {
-							if (data.ROW_CNT != 1) {
-								OnShowPopUp(s, e);
-							} else {
-								txtSALEEMPCD.SetValue(data.EMP_ID);
-								txtSALEEMPNM.SetValue(data.EMP_NM);
-							}
-						}
-					});
-				}
-			}
-		}
-
-		// 거래처 팝업 결과 리턴
-		function txtACCNT_NM_ButtonClick_Result(RET_ACCT_ID, RET_ACCT_NM, RET_VAT_NO) {
-			txtACCNT_ID.SetValue(RET_ACCT_ID);
-			txtACCNT_NM.SetValue(RET_ACCT_NM);
-
-			if (RET_ACCT_ID != "") {
-				$.ajax({
-					type: "POST",
-					async: false,
-					url: strAjaxUrl,
-					data: {
-						requestType: "GetAccountAddress",
-						ACCNTID: RET_ACCT_ID
-					},
-					dataType: "json",
-					success: function(data) {
-						if (data.ROW_CNT == 1) {
-							txtACCNT_ID.SetValue(data.ACCNT_ID);
-							txtACCNT_NM.SetValue(data.ACCNT_NM);
-							txtSALEEMPCD.SetValue(data.EMP_ID);
-							txtSALEEMPNM.SetValue(data.EMP_NM);
-
-							if (cboDELI_TYPE.GetValue() == "010") {
-								txtDELI_ZIPCODE.SetValue(data.DELI_ZIPCODE);
-								txtDELI_ADDR.SetValue(data.DELI_ADDR);
-								txtDELI_DETAIL.SetValue(data.DELI_DETAIL);
-								txtDELI_TEL.SetValue(data.DELI_TEL);
-							}
-
-							window.setTimeout(function() {
-								btnLoadBalance.DoClick();
-							}, 10);
-						}
-					}
-				});
-			}
-		}
-
-		// 간납처 팝업 결과 리턴
-		function txtACCNT_SUB_NM_ButtonClick_Result(RET_ACCT_ID, RET_ACCT_NM, RET_VAT_NO) {
-			txtACCNT_SUB_ID.SetValue(RET_ACCT_ID);
-			txtACCNT_SUB_NM.SetValue(RET_ACCT_NM);
-
-			if (RET_ACCT_ID != "" && cboDELI_TYPE.GetValue() == "011") {
-				$.ajax({
-					type: "POST",
-					async: false,
-					url: strAjaxUrl,
-					data: {
-						requestType: "GetAccountAddress",
-						ACCNTID: RET_ACCT_ID
-					},
-					dataType: "json",
-					success: function(data) {
-						if (data.ROW_CNT == 1) {
-
-							txtDELI_ZIPCODE.SetValue(data.DELI_ZIPCODE);
-							txtDELI_ADDR.SetValue(data.DELI_ADDR);
-							txtDELI_DETAIL.SetValue(data.DELI_DETAIL);
-							txtDELI_TEL.SetValue(data.DELI_TEL);
-						}
-					}
-				});
-			}
-
-			window.setTimeout(function() {
-				btnLoadgrd1.DoClick();
-			}, 10);
-		}
-
-		function txtSALEEMPNM_ButtonClick_Result(RET_EMP_ID, RET_EMP_NM) {
-			txtSALEEMPCD.SetValue(RET_EMP_ID);
-			txtSALEEMPNM.SetValue(RET_EMP_NM);
-		}
-
-		function btnAddr_ButtonClick_Result(RET_CODE, RET_NAME, RET_ZIPCODE, RET_TEL, RET_ADDR, RET_DETAIL) {
-			txtDELI_ZIPCODE.SetValue(RET_ZIPCODE);
-			txtDELI_TEL.SetValue(RET_TEL);
-			txtDELI_ADDR.SetValue(RET_ADDR);
-			txtDELI_DETAIL.SetValue(RET_DETAIL);
-		}
-
-		function cboDELI_TYPE_ValueChanged(s, e) {
-			var vDELI_TYPE = fnGetCTRLVal(cboDELI_TYPE);
-			var vACCNT_ID = "";
-
-			if (vDELI_TYPE == "010") {
-				vACCNT_ID = fnGetCTRLVal(txtACCNT_ID);
-			} else if (vDELI_TYPE == "011") {
-				vACCNT_ID = fnGetCTRLVal(txtACCNT_SUB_ID);
-			}
-
-			if (vACCNT_ID != "") {
-				$.ajax({
-					type: "POST",
-					async: false,
-					url: strAjaxUrl,
-					data: {
-						requestType: "GetAccountAddress",
-						ACCNTID: vACCNT_ID
-					},
-					dataType: "json",
-					success: function(data) {
-						if (data.ROW_CNT == 1) {
-							txtDELI_ZIPCODE.SetValue(data.DELI_ZIPCODE);
-							txtDELI_ADDR.SetValue(data.DELI_ADDR);
-							txtDELI_DETAIL.SetValue(data.DELI_DETAIL);
-							txtDELI_TEL.SetValue(data.DELI_TEL);
-						}
-					}
-				});
-			} else {
-				txtDELI_ZIPCODE.SetValue("");
-				txtDELI_ADDR.SetValue("");
-				txtDELI_DETAIL.SetValue("");
-				txtDELI_TEL.SetValue("");
-			}
-		}
-
-		function cboORDDER_ACCNT_TYPE_CD_ValueChanged(s, e) {
-			window.setTimeout(function() {
-				btnLoadgrd1.DoClick();
-			}, 10);
-		}
-
-		function grd1_BatchEditStartEditing(s, e) {
-			if (e.focusedColumn.fieldName == "ORDQTY") {
-				e.cancel = false;
-			} else {
-				e.cancel = true;
-			}
-		}
-
-		function grd1_BatchEditEndEditing(s, e) {
-
-			try {
-				window.setTimeout(function() {
-					// 금액 = 주문수량 * 단가
-					var vORDQTY = toInt(grd1.batchEditApi.GetCellValue(e.visibleIndex, "ORDQTY"));
-					var vPRICE = toInt(grd1.batchEditApi.GetCellValue(e.visibleIndex, "PRICE"));
-					var vORDAMT = vORDQTY * vPRICE;
-
-					grd1.batchEditApi.SetCellValue(e.visibleIndex, "ORDAMT", vORDAMT);
-
-					gridSum();
-				}, 10);
-			} catch (error) {
-				COMMON_MSGBOX("!", error);
-			}
-		}
-
-		function gridSum() {
-
-			var indiciesGrd1 = grd1.batchEditApi.GetRowVisibleIndices(false);
-			var vORDQTY = 0;
-			var vORDAMT = 0;
-			var vSumORDQTY = 0;
-			var vSumORDAMT = 0;
-
-			for (var iRow = 0; iRow < indiciesGrd1.length; iRow++) {
-				if (grd1.batchEditApi.IsDeletedRow(indiciesGrd1[iRow]) == false) {
-					vORDQTY = toInt(grd1.batchEditApi.GetCellValue(indiciesGrd1[iRow], "ORDQTY"));
-					vORDAMT = toInt(grd1.batchEditApi.GetCellValue(indiciesGrd1[iRow], "ORDAMT"));
-
-					if (vORDQTY != null) {
-						vSumORDQTY = vSumORDQTY + vORDQTY;
-					}
-					if (vORDAMT != null) {
-						vSumORDAMT = vSumORDAMT + vORDAMT;
-					}
-				}
-			}
-
-			tdFooterGrd1_ORDQTY.innerText = SetCommaValue(vSumORDQTY);
-			tdFooterGrd1_ORDAMT.innerText = SetCommaValue(vSumORDAMT);
-		}
-
-		function btnAddr_Click(s, e) {
-			if (!fnControlValidValue(cboDELI_TYPE, "배송처")) return;
-
-			var vDELI_TYPE = cboDELI_TYPE.GetValue();
-			var vACCNT_ID = null;
-			if (vDELI_TYPE == "010") {
-				vACCNT_ID = txtACCNT_ID.GetValue();
-			} else if (vDELI_TYPE == "011") {
-				vACCNT_ID = txtACCNT_SUB_ID.GetValue();
-			}
-			//var vParam = "ReturnMethod=" + "btnAddr_ButtonClick_Result&pAccntId=" + vACCNT_ID + "&_OPENTYPE=POPUP";
-			//ERPOpenPopup("/WM/WM0021.aspx", vParam, 1000, 700, false);
-
-			var obj = new Object();
-			var Array = [];
-
-			obj.pReturnMethod = "btnAddr_ButtonClick_Result";
-			obj.pAccntId = vACCNT_ID;
-
-			var strJsonData = JSON.stringify(obj);
-			popWM0022List.PerformCallback(strJsonData);
-		}
-		//]]>
-	</script>
 </head>
 
 <body class="h-100">
@@ -685,52 +22,18 @@
 		<div class="aspNetHidden">
 			<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
 			<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
-			<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
-				value="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" />
+			<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="" />
 		</div>
-
-		<script type="text/javascript">
-			//<![CDATA[
-			var theForm = document.forms['form1'];
-			if (!theForm) {
-				theForm = document.form1;
-			}
-
-			function __doPostBack(eventTarget, eventArgument) {
-				if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
-					theForm.__EVENTTARGET.value = eventTarget;
-					theForm.__EVENTARGUMENT.value = eventArgument;
-					theForm.submit();
-				}
-			}
-			//]]>
-		</script>
-
-
-		<script src="/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZL8brbRH6PU3OF4j7YF1snQkxhtSd-ik02YwIOTkm04giCKpkemqsMs_tZ_Wr3OCSQ2&amp;t=637034445464690003" type="text/javascript"></script>
-
-
-		<script src="/ScriptResource.axd?d=B_UHbsmfULLw-9ih4t4bweV_-_qiPPord0VTdA_utFeiPDNrXFt-MW892eMpfL4O8jbMdTjvRW7cVaP445J3cfeDUi03Edt8z6E3gRGpP3QJAmb0O4dvwOUzOEPFc8B-smiPd2e0YPwGeKhbY7naHLte1h6Nq-gTO4tTJkAV5341&amp;t=ffffffffa580202a"
-			type="text/javascript"></script>
-		<script src="/ScriptResource.axd?d=aLbq1MoAvui0PhKS8ZfaOn7G4BVSc7frBVpeK0pfjKbyynnGkuJUgyAMefoRMdXRtmYUyll05xLyXesod79KCnoJe8b6pxGT06Y-cDDiHm8mX4PtOprCw9780YiFcgdUdemp9GVnmFMab5PGeYkqKA25lTu1RPZ3ftIM56QlBWg1&amp;t=ffffffffa580202a"
-			type="text/javascript"></script>
-		<script src="/WebResource.axd?d=JoBkLzP19aTuxbWOhHobYkI1nL4OAfoTu0-mnOwdkH-jnU9BSAv_b_IB0LQWA4ZMhent5RVKAHWXAR4I-4DxAw2&amp;t=637034445464690003" type="text/javascript"></script>
 		<div class="aspNetHidden">
 
 			<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="A3D2E175" />
 			<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
 				value="hhRA61Lnn5IAqVlnGO8P5XGmMwYWuloMzXc/rE4lGpZ2FelLhPhDx+PXpLZk/jpQL1rkt9ZAxyK7YK/RkUSh2MNPXcxP3pJh10j7Vz2GZfTMqTC+0h8qKz8JGMupuC8Jyk5pHNxqmNYFO790tOU6B4JhxycBRWf3cDjE11qelvux5pShhgH5S7s/H8G/eiiSbUQu9m9hFgrLp70gzJqtZ6FL/fAga3BO4VKMzHi7aXIjGeDGt7mg2fISYkz/f9zV/+BygnJhdsk2GP7gr8U0wCsQY1S5hGARFO+bXUyOgRHjHhXK9n/Hc+lz7T1qa95gpIhdtNbOv4KfGPhsYriR1lHwJFs6iXsZApsV8iuKHk0fF2UL7E7jgBIsaSN9/1A83Yp88vxQ365fWGJXbpQB7zvOClJVEBbGKo1Mu+ENBxDL5pafnFLBSxTkcZoV5pH1" />
 		</div>
-		<script type="text/javascript">
-			//<![CDATA[
-			Sys.WebForms.PageRequestManager._initialize('ctl00$ScriptManager1', 'form1', ['tctl00$CallbackPanelBase$UpdatePanel', 'CallbackPanelBase_UpdatePanel'], [], [], 90, 'ctl00');
-			//]]>
-		</script>
-
 		<div class="dbt-header-separator shadow"></div>
 		<div class="d-flex h-100">
 			<div class="d-none d-lg-flex flex-shrink-0 flex-column dbt-side-nav">
-				<div class="h-100 overflow-hidden dbt-area-highlight lnav_width shadow_l" style="background:green">
+				<div class="h-100 overflow-hidden dbt-area-highlight lnav_width shadow_l">
 
 
 					<div class="dbt-header-part dbt-header-title">
@@ -738,134 +41,8 @@
 					</div>
 
 					<a href="../Main.aspx?MENUID=HOME" target="_self" class="lnb_title"><i class="fas fa-folder-open"></i>전체 카테고리</a>
-					<script id="dxss_184150023">
-						<!--
-						var ASPx, dx, DevExpress;
-						! function n(t, o, e, r, i, a, c) {
-							var u = [],
-								l = [],
-								d = 0,
-								f = [],
-								s = [],
-								h = !1;
 
-							function C(n, r, i) {
-								n[i] = function() {
-									r(t, o, e)
-								}
-							}
 
-							function v() {
-								return r == d
-							}
-
-							function m() {
-								return !0
-							}
-
-							function E(n) {
-								return function() {
-									throw new Error(n)
-								}
-							}
-
-							function x(n) {
-								n()
-							}
-							var S = -1;
-
-							function b(n, t, o, e) {
-								var r = ++S;
-								return function() {
-									i(function() {
-										r == S && o() && (S--, function(n) {
-											for (var t = n.length, o = 0, e = null;
-												(e = n[o]) && o < t; o++) e && e();
-											n.length = 0
-										}(t), e())
-									})
-								}
-							}
-							var p = b(0, f, function() {
-									return h && v()
-								}, function() {
-									t.attachToReady = x
-								}),
-								T = b(0, s, m, function() {
-									t.attachToLoad = x, p()
-								}),
-								w = b(0, l, m, function() {
-									t.SS = function(n) {
-										n(t, o, e)
-									}, T()
-								}),
-								A = b(0, u, v, function() {
-									t.IS = E("Too late"), w()
-								}),
-								y = 0;
-							t.SS = function(n) {
-								var t = y++;
-								i(function() {
-									C(l, n, t)
-								})
-							};
-							var P = 0;
-							t.IS = function(n, t) {
-								i(function() {
-									for (C(u, n, t), d++; P < d && u[P];) u[P] = u[P]() && null, P++;
-									A()
-								})
-							}, t.attachToReady = f.push.bind(f), t.attachToLoad = s.push.bind(s), t.initResourceLoader = n, c.addEventListener("DOMContentLoaded", function() {
-								r = c.querySelectorAll("script[id^=dxis_][defer]").length, A()
-							}), a.addEventListener("load", function() {
-								h = !0, p()
-							});
-							var L = ["BeginCallback", "BrowserWindowResized", "CallbackError", "ControlsInitialized", "EndCallback", "ValidationCompleted"],
-								B = ["ForEachControl", "Get", "GetByName", "GetControlsByPredicate", "GetControlsByType"],
-								G = [];
-							var g = L.reduce(function(n, t) {
-								return ((n[t] = {}).AddHandler = function(n) {
-									G.push({
-										e: t,
-										h: n
-									})
-								}) && n
-							}, {});
-							g = B.reduce(function(n, t) {
-								return (n[t] = E("The environment has not been initialized. To access the " + t + " member, call the member from the ControlsInitialized event's handler.")) && n
-							}, g), t.loadControlCollectionPreloadHandlers = function(n) {
-								G.forEach(function(t) {
-									n[t.e].AddHandler(t.h)
-								}), L.forEach(function(t) {
-									g[t] = n[t]
-								}), B.forEach(function(t) {
-									g[t] = n[t].bind(n)
-								}), t.loadControlCollectionPreloadHandlers = G = g = null
-							}, a.ASPxClientControl = {
-								GetControlCollection: function() {
-									return g
-								}
-							}
-						}(ASPx || (ASPx = {}), dx || (dx = {}), DevExpress || (DevExpress = {}), -1, window.requestAnimationFrame || setTimeout, window, document);
-
-						//
-						-->
-					</script>
-					<script id="dxis_1114114121" src="/DXR.axd?r=1_11-boual"></script>
-					<script id="dxis_1019809068" src="/DXR.axd?r=1_252,1_12,1_23-boual&amp;order=0" defer></script>
-					<script id="dxis_346246450" src="/DXR.axd?r=1_64-boual"></script>
-					<script id="dxis_1836341947"
-						src="/DXR.axd?r=1_13,1_14,1_15,1_46,23_0,23_1,23_10,1_17,1_24,1_33,23_3,23_4,23_133,23_143,23_134,23_139,23_2,23_136,1_182,23_31,1_60,23_32,1_183,1_184,1_21,1_22,1_190,1_186,1_193,23_35,23_37,23_30,1_195,23_43,1_188,23_33,1_185,1_192,23_39,1_194,23_38,1_19,1_213,1_224,1_225,1_216,1_219,1_220,1_217,1_221,1_211,1_227,1_236,1_238,1_239,1_229,1_230,1_234,1_240,23_11,23_12,23_18,23_13,23_14,23_15,1_41,23_8,1_49-eoual&amp;order=1"
-						defer></script>
-					<script id="dxss_697210726">
-						<!--
-						ASPx.SS(function(ASPx, dx) {
-							ASPx.AccessibilitySR.DefaultCallbackMessage = 'Callback in process.';
-
-						});
-						//
-						-->
-					</script>
 					<nav class="dxbs-tree dbt-treeview" id="navTreeView">
 						<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0">
 							<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-col m-0"></span><span class="text">시스템 관리</span></a>
@@ -920,22 +97,7 @@
 
 
 				<div class="dbt-header-part dbt-area-highlight">
-					<script id="dxss_1082586957">
-						<!--
-						ASPx.SS(function(ASPx, dx) {
-							ASPx.AccessibilitySR.AddStringResources({
-								'MenuVerticalText': 'Vertical',
-								'MenuHorizontalText': 'Horizontal',
-								'MenuText': 'menu',
-								'MenuBarText': 'menubar',
-								'MenuLevelText': 'level'
-							});
 
-
-						});
-						//
-						-->
-					</script>
 					<div class="dxbs-toolbar-adaptive dbt-header-toolbar p-2 justify-content-end dxbs-loading dxbs-ta-nib" id="Header_HeaderToolbar">
 						<div class="btn-toolbar" role="toolbar">
 							<!--dxnp-->
@@ -1029,24 +191,262 @@
 										<div class="col-12">
 											<div class="dxbs-fl form-horizontal" id="CallbackPanelBase_mainContent_WM0020_FormLayout1">
 												<div class="row">
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_3" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_NM_I">거래처</label>
+															<div class="dxbs-button-edit dxbs-fl-ctrl form-group" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_NM" style="width:100%;">
+																<div class="input-group">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_NM_I" class="form-control input_redcheck" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtACCNT_NM"
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_NM_B0" class="input-group-append">
+																		<button class="dxbs-edit-btn btn btn-secondary" type="button" aria-label="Ellipsis"><span aria-hidden="true" class="fas fa-search"></span></button>
+																	</div>
+																</div>
+															</div>
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_4" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_ID_I">거래처정보</label>
+															<div class="dxbs-fl-ctrl form-group">
+
+																<div class="dxbs-textbox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_ID" style="width:100%;">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_ID_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtACCNT_ID" readonly="readonly"
+																			savedtabindex="[object Object]" tabindex="-1" savedonclick="[object Object]" savedonfocus="[object Object]" savedonblur="[object Object]" savedonkeydown="[object Object]" savedonkeypress="[object Object]"
+																			savedonkeyup="[object Object]" disabled="" autocomplete="off">
+																	</div>
+																</div>
+																&nbsp;
+																<div class="dxbs-textbox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtSALES_EMP_NM" style="width:100%;">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtSALES_EMP_NM_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtSALES_EMP_NM" readonly="readonly"
+																			savedtabindex="[object Object]" tabindex="-1" savedonclick="[object Object]" savedonfocus="[object Object]" savedonblur="[object Object]" savedonkeydown="[object Object]" savedonkeypress="[object Object]"
+																			savedonkeyup="[object Object]" disabled="" autocomplete="off">
+																	</div>
+																</div>
+
+															</div>
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_5" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label></label>
+															<div class="dxbs-fl-ctrl form-group dxbs-fl-ctrl-nc">
+
+																<div class="dxbs-dropdown-edit dxbs-combobox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL">
+																	<div class="input-group">
+																		<div class="dxbs-input-cntr">
+																			<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboEBILL_MAIL"
+																				autocomplete="off"><span></span>
+																		</div>
+																		<div class="input-group-append">
+																			<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																					class="fas fa-chevron-down"></span></span>
+																			<div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_L" data-observed="true">
+																				<ul class="list-group">
+																					<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+																					<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+																				</ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboEBILL_MAIL$L" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_L_VI" value="">
+																			</div>
+																		</div>
+																	</div>
+																</div><input type="hidden" name="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_VI" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboEBILL_MAIL_VI" value="">
+																<a class="dxbs-hyperlink ml-2 icon-only" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_linkHomeTax">
+																	<span class="image fa fa-home" aria-hidden="true"></span></a>
+
+																<div class="ml-2 form-check" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkTAX">
+																	<input class="position-static form-check-input"
+																	type="checkbox" checked="checked" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkTAX_I" style="">
+																	<span class="badge">
+																		<span>계산서발행</span>
+																	</span>
+																	<input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$chkTAX" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkTAX_S" value="C">
+																</div>
+
+																<div class="ml-2 form-check" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkISSUE">
+																	<input class="position-static form-check-input" type="checkbox" checked="checked" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkISSUE_I">
+																	<span class="badge"><span>출고</span></span>
+																	<input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$chkISSUE" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_chkISSUE_S" value="C">
+																</div>
+
+															</div>
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_6" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_NM_I">간납처</label>
+															<div class="dxbs-button-edit dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_NM" style="width:100%;">
+																<div class="input-group">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_NM_I" class="form-control input_redcheck" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtACCNT_SUB_NM"
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_NM_B0" class="input-group-append">
+																		<button class="dxbs-edit-btn btn btn-secondary" type="button" aria-label="Ellipsis"><span aria-hidden="true" class="fas fa-search"></span></button>
+																	</div>
+																</div>
+															</div>
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_7" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_ID_I">간납처정보</label>
+															<div class="dxbs-fl-ctrl form-group">
+
+																<div class="dxbs-textbox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_ID" style="width:100%;">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_ID_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtACCNT_SUB_ID" readonly="readonly"
+																			savedtabindex="[object Object]" tabindex="-1" savedonclick="[object Object]" savedonfocus="[object Object]" savedonblur="[object Object]" savedonkeydown="[object Object]" savedonkeypress="[object Object]"
+																			savedonkeyup="[object Object]" disabled="" autocomplete="off">
+																	</div>
+																</div>
+																&nbsp;
+																<div class="dxbs-textbox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_MANAGE_NM" style="width:100%;">
+																	<div>
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtACCNT_SUB_MANAGE_NM_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtACCNT_SUB_MANAGE_NM"
+																			readonly="readonly" savedtabindex="[object Object]" tabindex="-1" savedonclick="[object Object]" savedonfocus="[object Object]" savedonblur="[object Object]" savedonkeydown="[object Object]"
+																			savedonkeypress="[object Object]" savedonkeyup="[object Object]" disabled="" autocomplete="off">
+																	</div>
+																</div>
+
+															</div>
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_8" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_I">공급형태</label>
+															<div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD">
+																<div class="input-group">
+																	<div class="dxbs-input-cntr">
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboKPIS_SUPPLY_TYPE_CD" value=" "
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div class="input-group-append">
+																		<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																				class="fas fa-chevron-down"></span></span>
+																		<div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_L" data-observed="true">
+																			<ul class="list-group">
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+																			</ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboKPIS_SUPPLY_TYPE_CD$L" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_L_VI" value="">
+																		</div>
+																	</div>
+																</div>
+															</div><input type="hidden" name="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_VI" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboKPIS_SUPPLY_TYPE_CD_VI" value="">
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_9" class="col-12 col-sm-12 col-md-6 col-lg-6">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtSECURITY_INFO_I">담보</label>
+															<div class="dxbs-memo dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtSECURITY_INFO">
+																<div>
+																	<textarea id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtSECURITY_INFO_I" class="form-control" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtSECURITY_INFO" autocomplete="off"></textarea>
+																</div>
+															</div>
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_10" class="col-12 col-sm-12 col-md-6 col-lg-6">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtCASH_RULE_I">회전일</label>
+															<div class="dxbs-memo dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtCASH_RULE">
+																<div>
+																	<textarea id="CallbackPanelBase_mainContent_SD0040_FormLayout1_txtCASH_RULE_I" class="form-control" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$txtCASH_RULE" autocomplete="off"></textarea>
+																</div>
+															</div>
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_11" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_I">반품유형</label>
+															<div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD">
+																<div class="input-group">
+																	<div class="dxbs-input-cntr">
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboRETURN_TYPE_CD" value=" "
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div class="input-group-append">
+																		<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																				class="fas fa-chevron-down"></span></span>
+																		<div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_L" data-observed="true">
+																			<ul class="list-group">
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+																			</ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboRETURN_TYPE_CD$L" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_L_VI" value="">
+																		</div>
+																	</div>
+																</div>
+															</div><input type="hidden" name="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_VI" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_VI" value="">
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_12" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_I">반품유형상세</label>
+															<div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB">
+																<div class="input-group">
+																	<div class="dxbs-input-cntr">
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboRETURN_TYPE_CD_SUB" value=" "
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div class="input-group-append">
+																		<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																				class="fas fa-chevron-down"></span></span>
+																		<div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_L" data-observed="true">
+																			<ul class="list-group">
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+																			</ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboRETURN_TYPE_CD_SUB$L" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_L_VI" value="">
+																		</div>
+																	</div>
+																</div>
+															</div><input type="hidden" name="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_VI" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboRETURN_TYPE_CD_SUB_VI" value="">
+
+														</div>
+													</div>
+													<div id="CallbackPanelBase_mainContent_SD0040_FormLayout1_13" class="col-12 col-sm-6 col-md-4 col-lg-4">
+														<div class="form-group">
+															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_I">출고창고</label>
+															<div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME">
+																<div class="input-group">
+																	<div class="dxbs-input-cntr">
+																		<input id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboPR_INVENTORY_NAME" value="WB"
+																			autocomplete="off"><span></span>
+																	</div>
+																	<div class="input-group-append">
+																		<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																				class="fas fa-chevron-down"></span></span>
+																		<div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_L" data-observed="true">
+																			<ul class="list-group">
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+																				<li id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+																			</ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0040_FormLayout1$cboPR_INVENTORY_NAME$L" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_L_VI" value="ORG-500193">
+																		</div>
+																	</div>
+																</div>
+															</div><input type="hidden" name="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_VI" id="CallbackPanelBase_mainContent_SD0040_FormLayout1_cboPR_INVENTORY_NAME_VI" value="ORG-500193">
+
+														</div>
+													</div>
+												</div>
+
+												<div class="row">
 													<div id="CallbackPanelBase_mainContent_WM0020_FormLayout1_0" class="col-md-4">
 														<div class="form-group">
 															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_WM0020_FormLayout1_cboORDDER_ACCNT_TYPE_CD_I">주문분류</label>
-															<script id="dxss_1185811797">
-																<!--
-																ASPx.SS(function(ASPx, dx) {
-																	ASPx.AccessibilitySR.AddStringResources({
-																		'BlankEditorText': 'blank',
-																		'ComboBoxFilteringResultFormatString': 'The found item count is {0}. The selected item text is {1}. ',
-																		'ComboBoxCurrentTextFormatString': 'Current text is {2} ',
-																		'ItemPositionFormatString': ', {0} of {1}'
-																	});
 
-
-																});
-																//
-																-->
-															</script>
 															<div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_WM0020_FormLayout1_cboORDDER_ACCNT_TYPE_CD">
 																<div class="input-group">
 																	<div class="dxbs-input-cntr">
@@ -1124,42 +524,7 @@
 													<div id="CallbackPanelBase_mainContent_WM0020_FormLayout1_5" class="col-md-4">
 														<div class="form-group">
 															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_WM0020_FormLayout1_spnUnreachAMT_I">미도래</label>
-															<script id="dxss_1744734045">
-																<!--
-																ASPx.SS(function(ASPx, dx) {
-																	(function() {
-																		var a = {
-																			'currency': '₩',
-																			'shortDate': 'yyyy-MM-dd',
-																			'abbrMonthNames': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', ''],
-																			'numNegInf': '-∞',
-																			'am': '오전',
-																			'currPrec': 0,
-																			'longDate': 'yyyy\'년\' M\'월\' d\'일\' dddd',
-																			'genMonthNames': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', ''],
-																			'numPosInf': '∞',
-																			'abbrDayNames': ['일', '월', '화', '수', '목', '금', '토'],
-																			'currNegPattern': 1,
-																			'monthNames': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', ''],
-																			'monthDay': 'M월 d일',
-																			'yearMonth': 'yyyy\'년\' M\'월\'',
-																			'pm': '오후',
-																			'longTime': 'tt h:mm:ss',
-																			'ds': '-',
-																			'shortTime': 'tt h:mm',
-																			'percentPattern': 1,
-																			'dayNames': ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
-																		};
-																		for (var b in a) ASPx.CultureInfo[b] = a[b];
-																	})();
 
-																	ASPx.NumberDecimalSeparator = '.';
-
-
-																});
-																//
-																-->
-															</script>
 															<div class="dxbs-spin-edit dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_WM0020_FormLayout1_spnUnreachAMT">
 																<div>
 																	<input id="CallbackPanelBase_mainContent_WM0020_FormLayout1_spnUnreachAMT_I" class="form-control text-right" type="text" name="ctl00$CallbackPanelBase$mainContent$WM0020_FormLayout1$spnUnreachAMT" value="0"
@@ -1176,8 +541,11 @@
 															<label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_WM0020_FormLayout1_chkSAME_I">간납처</label>
 															<div class="dxbs-fl-ctrl form-group">
 
+
 																<div title="동일" class="form-check" id="CallbackPanelBase_mainContent_WM0020_FormLayout1_chkSAME">
-																	<input id="CallbackPanelBase_mainContent_WM0020_FormLayout1_chkSAME_I" class="form-check-input" type="checkbox" /><label class="form-check-label"><span>동일</span></label>
+																	<input id="CallbackPanelBase_mainContent_WM0020_FormLayout1_chkSAME_I" class="form-check-input" type="checkbox" />
+
+
 																</div>
 																&nbsp;&nbsp;&nbsp;
 																<div class="dxbs-button-edit" id="CallbackPanelBase_mainContent_WM0020_FormLayout1_txtACCNT_SUB_NM" style="width:100%;">

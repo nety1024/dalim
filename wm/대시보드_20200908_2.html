@@ -439,14 +439,16 @@
 				<!-- 본문 영역 시작 -->
 				<div class="d-flex flex-fill overflow-auto bg_gray">
 					<div class="container-fluid">
-
+						<div class="row">
+							<!--<p class="col-12 dbt-content-title dashboard_title">Dashboard</p>-->
+						</div>
 						<!-- 대시보드 상단 시작 -->
 						<div class="row mb-4 mt20 dashboard_top">
-							<div class="col-md-4">
-								<div class="white_box">
-									<div class="dashbox_title1 dash_ico_d">
+							<div class="col-md-3">
+								<div class="white_box1">
+									<div class="dashbox_title2 dash_ico_d">
 									</div>
-									<div class="white_box0">
+									<div class="white_box2">
 										<div class="text1">
 											<span>&#8361; 200,000,000</span>
 										</div>
@@ -457,11 +459,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4">
-								<div class="white_box">
-									<div class="dashbox_title1 dash_ico_m">
+							<div class="col-md-3">
+								<div class="white_box1">
+									<div class="dashbox_title2 dash_ico_m">
 									</div>
-									<div class="white_box0">
+									<div class="white_box2">
 										<div class="text1">
 											<span>&#8361; 200,000,000</span>
 										</div>
@@ -472,11 +474,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4">
-								<div class="white_box">
-									<div class="dashbox_title1 dash_ico_y">
+							<div class="col-md-3">
+								<div class="white_box1">
+									<div class="dashbox_title2 dash_ico_y">
 									</div>
-									<div class="white_box0">
+									<div class="white_box2">
 										<div class="text1">
 											<span>&#8361; 200,000,000</span>
 										</div>
@@ -487,172 +489,29 @@
 									</div>
 								</div>
 							</div>
+							<div class="col-md-3">
+								<div class="white_box1">
+									<div class="dashbox_title2 dash_ico_p">
+									</div>
+									<div class="white_box2">
+										<div class="text3">
+											<div class="text3_left">
+												<p><span>도매주문</span><span class="pending_text2">15</span></p>
+												<p><span>도매반품</span><span class="pending_text2">15</span></p>
+												<p><span>주문접수</span><span class="pending_text2">15</span></p>
+											</div>
+											<div class="text3_right">
+												<p><span>주문등록</span><span class="pending_text2">15</span></p>
+												<p><span>입금등록</span><span class="pending_text2">15</span></p>
+												<p><span>입금등록</span><span class="pending_text2">15</span></p>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 						<!-- 대시보드 상단 끝 -->
-
-						<!-- 대시보드 상단 시작 -->
-						<div class="row mb-4 mt20 dashboard_top">
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-										  <div class="single-chart">
-										    <svg viewBox="0 0 36 36" class="circular-chart red">
-										      <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-										      <path class="circle" stroke-dasharray="50, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-										      <text x="18" y="20.35" class="percentage">50%</text>
-										    </svg>
-										  </div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>도매 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">10</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-											<div class="single-chart">
-												<svg viewBox="0 0 36 36" class="circular-chart red">
-													<path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-													<path class="circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-													<text x="18" y="20.35" class="percentage">100%</text>
-												</svg>
-											</div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>주문 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">20</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-											<div class="single-chart">
-												<svg viewBox="0 0 36 36" class="circular-chart red">
-													<path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-													<path class="circle" stroke-dasharray="25, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-													<text x="18" y="20.35" class="percentage">25%</text>
-												</svg>
-											</div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>입금 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">5</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-											<div class="single-chart">
-												<svg viewBox="0 0 36 36" class="circular-chart red">
-													<path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-													<path class="circle" stroke-dasharray="25, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-													<text x="18" y="20.35" class="percentage">25%</text>
-												</svg>
-											</div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>입금 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">5</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-											<div class="single-chart">
-												<svg viewBox="0 0 36 36" class="circular-chart red">
-													<path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-													<path class="circle" stroke-dasharray="25, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-													<text x="18" y="20.35" class="percentage">25%</text>
-												</svg>
-											</div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>입금 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">5</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="white_box1">
-									<div class="dashbox_title2">
-										<!--그래프 시작 -->
-										<div class="flex-wrapper">
-											<div class="single-chart">
-												<svg viewBox="0 0 36 36" class="circular-chart red">
-													<path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-													<path class="circle" stroke-dasharray="25, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-													<text x="18" y="20.35" class="percentage">25%</text>
-												</svg>
-											</div>
-											</div>
-											<!--그래프 끝 -->
-									</div>
-									<div class="white_box2">
-										<div class="text3_title">
-												<span>입금 미승인</span>
-										</div>
-										<div class="text3">
-											<span class="darimblue">5</span><span>&nbsp;&nbsp;/&nbsp;&nbsp;</span><span class="red">20</span>
-										</div>
-									</div>
-								</div>
-							</div>
-
-						</div>
-						<!-- 대시보드 상단 끝 -->
-
-
-
-
-
 						<iframe id="infoPane" class="h-100 w-100 border-0" src=""></iframe>
 					</div>
 				</div>
