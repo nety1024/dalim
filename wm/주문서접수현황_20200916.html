@@ -1,83 +1,585 @@
 <!DOCTYPE html>
 <html class="h-100 theme-light dbt-loading-process">
-<meta charset="utf-8" />
 <head>
-	<link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,23_138-eoual" />
+	<link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,23_138,1_74,1_75,1_68,1_69,1_70,1_73-eoual" />
 	<link rel="stylesheet" href="../Content/DXR.css" />
+	<title>Dalim BioTech</title><meta charset="utf-8" />
+	<link rel="shortcut icon" type="image/x-icon" href="Content/images/favicon.png" />
 	<meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
-	<title>	dalim	</title>
-	<link rel="shortcut icon" type="image/x-icon" href="../Content/images/favicon.png" />
 	<link rel="stylesheet" href="../Content/bootstrap.css" />
 	<link href="../Content/dbt-icons.css" rel="stylesheet" />
 	<link href="../Content/common.css" rel="stylesheet" />
 	<link href="../Content/fontawesome.css" rel="stylesheet" />
 	<link href="../Content/custom.css" rel="stylesheet" />
-	<link href="../Content/jquery.mCustomScrollbar.min.css" rel="stylesheet" />
-
 	<script type="text/javascript" src="../Content/common.js" defer></script>
 	<script type="text/javascript" src="../Content/common_dbt.js" defer></script>
 	<script type="text/javascript" src="../Content/jquery-3.5.1.min.js"></script>
-	<script type="text/javascript" src="../Content/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script type="text/javascript">
-		var strRefreshFlag = false;
-		var strAjaxUrl = "/CM/CM_Ajax.aspx";
+		function MenuButton_Click(s, e) {
 
-		window.onload = function() {
-			var strURL = "";
+			// 검색
+			if (window['MainSearch'] != undefined && s == MainSearch) {
 
-			var strMenuUrl = sessionGet("MENUURL");
-			var strNode = sessionGet("MENUNODE");
-			var strSrcUrl = strMenuUrl + "?MENUID=" + strNode;
-			var strJsonData = window.sessionStorage.getItem("DERPLoginInfo");
-			var strCOMCD = window.sessionStorage.getItem("LoginCompany");
-			var strDBTYPE = window.sessionStorage.getItem("LoginDbTYpe");
+				if (typeof pageSearchButton_Click === "function") {
+					e.processOnServer = pageSearchButton_Click();
+				}
+			}
+			// 신규
+			else if (window['MainNew'] != undefined && s == MainNew) {
+				if (typeof pageNewButton_Click === "function") {
+					e.processOnServer = pageNewButton_Click();
+				}
+			}
+			// 저장
+			else if (window['MainSave'] != undefined && s == MainSave) {
 
-			var retValue = fnCheckUserInfo(strJsonData, strCOMCD, strDBTYPE);
+				if (typeof pageSaveButton_Click === "function") {
+					e.processOnServer = pageSaveButton_Click();
+				}
 
-			if (strMenuUrl == null || strMenuUrl == "") {
-				strURL = "Home.aspx?MENUID=HOME";
-				sessionSet("MENUURL", "Home.aspx?MENUID=HOME");
-				strRefreshFlag = false;
-			} else {
-				strURL = strSrcUrl.toString();
-				strRefreshFlag = true;
+			}
+			// 삭제
+			else if (window['MainDelete'] != undefined && s == MainDelete) {
+				if (typeof pageDelButton_Click === "function") {
+					e.processOnServer = pageDelButton_Click();
+				}
 
-				setTimeout(function() {
-					onReFreshTreview();
-				}, 300);
+			}
+			// 인쇄
+			else if (window['MainPrint'] != undefined && s == MainPrint) {
+				if (typeof pagePrintButton_Click === "function") {
+					pagePrintButton_Click();
+				}
 			}
 
-			document.getElementById("infoPane").src = strURL;
-		};
+			// 엑셀
+			else if (window['MainExcelExport'] != undefined && s == MainExcelExport) {
+				if (typeof pageExcelExportButton_Click === "function") {
+					pageExcelExportButton_Click();
+				}
+			}
 
+			if (e.processOnServer) {
+				LoadingPanel.Show();
+			}
 
-		/**********************************************************************************************************************
-		 * 사용자 id 세션정보 가져오기
-		 ***********************************************************************************************************************/
+		}
 
+		//textarea 외에 엔터키 방지
+		function captureReturnKey(e) {
+			if (e.keyCode == 13 || e.keyCode == 8) {
 
-		function hidLoginInfo_onInit(s, e) {
-			var strJsonData = window.sessionStorage.getItem("DERPLoginInfo");
-			//var strLoginInfo = new Object();
-			//strLoginInfo = JSON.parse(strJsonData);
+				if (e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA") return false;
+			}
 
-			if (strJsonData != "" && strJsonData != null && strJsonData != undefined) {
-				fnSetCTRLVal(s, strJsonData);
+		}
+	</script>
+	<script>
+		//<![CDATA[
+		var _ServerUrl = "http://222.110.75.206:80/";
+		//]]>
+	</script>
+	<script type="text/javascript">
+		//<![CDATA[
+		var strAjaxUrl = "/CM/CM_Ajax.aspx";
+		var dxCommand = "";
+		var numEditedRow = null;
+		var numGrd1SelectedRow = null;
+		var v_SaveFlag = true;
+		var numUploadCnt = 0;
+		var numUploadSelect = 0;
+		var strUploadFile = "";
+
+		function pageSearchButton_Click() {
+			return true;
+		}
+
+		function pageNewButton_Click() {
+			return true;
+		}
+
+		function pageSaveButton_Click() {
+
+			var strROWID = fnGetCTRLVal(hidRowId);
+
+			if (strROWID == "" || strROWID == null) {
+
+				COMMON_MSGBOX("!", "선택된 주문접수건이 없습니다.");
+				return;
+			}
+
+			if (!grd2.batchEditApi.HasChanges() && (!grd2.batchEditApi.HasChanges() && numUploadCnt == 0)) {
+				COMMON_MSGBOX("!", "변경된 내용이 없습니다.");
+				return false;
+			}
+
+			try {
+				var indiciesGrd2 = grd2.batchEditApi.GetRowVisibleIndices(true);
+				var vORDQTY = 0;
+				var vROWCNT = 0;
+
+				for (var iRow = 0; iRow < indiciesGrd2.length; iRow++) {
+					if (grd2.batchEditApi.IsDeletedRow(indiciesGrd2[iRow]) == false) {
+						var jRow = iRow + 1;
+						vOQUANTITY = toInt(grd2.batchEditApi.GetCellValue(indiciesGrd2[iRow], "QUANTITY"));
+						vROWCNT++;
+
+						if (vOQUANTITY <= 0) {
+							COMMON_MSGBOX("!", "수량이 0인 행은 행삭제하거나 수량을 입력하셔야합니다.행번호 : [ " + (iRow + 1) + " ] ");
+							return false;
+						}
+					}
+				}
+
+				if (COMMON_MSGBOX("?", "저장하시겠습니까?")) {
+
+					v_SaveFlag = SaveData();
+					if (v_SaveFlag) {
+						window.setTimeout(function() {
+							RefreshData();
+						}, 50);
+					}
+
+				}
+			} catch (error) {
+				COMMON_MSGBOX("!", error);
+				return false;
+			}
+
+			return false;
+		}
+
+		function pageDelButton_Click() {
+
+			if (fnGetCTRLVal(hidWHORDNO) == "") {
+				COMMON_MSGBOX("!", "삭제할 주문번호를 선택하세요.");
+				return false;
+			}
+
+			if (fnGetCTRLVal(hidORDSTAT) == "2") {
+				COMMON_MSGBOX("!", "승인된 주문이므로 삭제할 수 없습니다.");
+				return false;
+			}
+
+			if (fnGetCTRLVal(hidORDSTAT) == "9") {
+				COMMON_MSGBOX("!", "취소된 주문이므로 삭제할 수 없습니다.");
+				return false;
+			}
+
+			if (!COMMON_MSGBOX("?", "삭제하시겠습니까?")) {
+				return false;
+			}
+
+			return true;
+		}
+
+		function pagePrintButton_Click() {
+			return true;
+		}
+
+		function SaveData() {
+			var visibleIndices = grd2.batchEditApi.GetRowVisibleIndices(true);
+			var grd_Array = [];
+
+			var obj = new Object();
+
+			obj.QRYTP = "WJS_PKG_SD0020.UPD_HEADER",
+				obj.P_USER_ID = "EMP-500932";
+			obj.P_ROW_ID = fnGetCTRLVal(hidRowId);
+
+			//저장할 디테일 데이터 Array
+			for (var i = 0; i < visibleIndices.length; i++) {
+				var iRow = visibleIndices[i];
+
+				var delRow = grd2.batchEditApi.IsDeletedRow(iRow);
+				var InsRow = grd2.batchEditApi.IsNewRow(iRow);
+
+				grd_Array.push({
+					QRYTP: "WJS_PKG_SD0020.UPD_DETAIL",
+					PROD_ID: grd2.batchEditApi.GetCellValue(iRow, "PROD_ID"),
+					QUANTITY: grd2.batchEditApi.GetCellValue(iRow, "QUANTITY"),
+					ROW_ID: grd2.batchEditApi.GetCellValue(iRow, "ROW_ID"),
+					NEWYN: delRow ? "D" : grd2.batchEditApi.GetCellValue(iRow, "NEWYN"),
+					CONQTY: grd2.batchEditApi.GetCellValue(iRow, "CONQTY")
+				});
+
+			}
+
+			obj.D_DATAS = grd_Array;
+
+			var visibleIndiceFiles = grdFileList.batchEditApi.GetRowVisibleIndices(true);
+			var grdFileList_Array = [];
+
+			////저장할 디테일 데이터 Array
+			for (var i = 0; i < visibleIndiceFiles.length; i++) {
+				var iRow = visibleIndiceFiles[i];
+
+				var delRow = grdFileList.batchEditApi.IsDeletedRow(iRow);
+				var InsRow = grdFileList.batchEditApi.IsNewRow(iRow);
+
+				grdFileList_Array.push({
+					QRYTP: "WJS_PKG_SD0020.UPD_FILELIST",
+					FILEORGNM: grdFileList.batchEditApi.GetCellValue(iRow, "FILEORGNM"),
+					FILESIZE: grdFileList.batchEditApi.GetCellValue(iRow, "FILESIZE"),
+					FILETP: grdFileList.batchEditApi.GetCellValue(iRow, "FILETP"),
+					FILEID: grdFileList.batchEditApi.GetCellValue(iRow, "FILEID"),
+					FILENM: grdFileList.batchEditApi.GetCellValue(iRow, "FILENM"),
+					FILEDIRECT: grdFileList.batchEditApi.GetCellValue(iRow, "FILEDIRECT"),
+					FILEPATH: grdFileList.batchEditApi.GetCellValue(iRow, "FILEPATH"),
+					ROW_ID: grdFileList.batchEditApi.GetCellValue(iRow, "ROW_ID"),
+					NEWYN: grdFileList.batchEditApi.GetCellValue(iRow, "NEWYN")
+				});
+			}
+
+			obj.D_FILEDATS = grdFileList_Array;
+
+			// 오브젝트를 JSON형식으로 변환
+			var objData = JSON.stringify(obj);
+
+			//데이터 저장
+			var RetVal = fnJQueryRetStr("SD_Ajax.aspx", "SD0020_Save", objData);
+
+			if (RetVal == "S") {
+				COMMON_MSGBOX("!", "저장되었습니다.");
+				return true;
+			} else {
+				return false;
 			}
 		}
 
-		function fnCheckUserInfo(strJsonInfo, strCOMCD, strDBTYPE) {
+		function RefreshData() {
 
-			var retResult = false;
+			var strRowId = fnGetCTRLVal(hidRowId);
+			dxCommand = "Select";
+
+			var obj = new Object();
+			var Array = [];
+
+			obj.P_ROWID = strRowId;
+			obj.P_Command = dxCommand;
+
+			var strJsonData = JSON.stringify(obj);
+
+			grd2.PerformCallback(strJsonData);
+			grdFileList.PerformCallback(strJsonData);
+		}
+
+
+		function OnShowPopUp(s, e) {
+			var vNAME = "";
+			var vParam = "";
+
+			var vSender = "";
+
+			// s.name 앞부분에 다른 텍스트들이 잔뜩 붙어 있어서 떼어냄
+			if (s.name.indexOf("txt") > 0) {
+				vSender = s.name.substring(s.name.indexOf("txt"), s.name.length);
+			}
+
+			if (vSender == "txtACCNT_NM") { // 거래처
+				vNAME = fnGetCTRLVal(txtACCNT_NM);
+
+				var obj = new Object();
+				var Array = [];
+
+				obj.pReturnMethod = "txtACCNT_NM_ButtonClick_Result";
+				obj.pType = "ACCNTNM";
+				obj.pSelTP = "1";
+				obj.pValue = vNAME;
+				obj.pAccntId = "";
+
+				var strJsonData = JSON.stringify(obj);
+				popCM0040AccntList.PerformCallback(strJsonData);
+			} else if (vSender == "txtACCNT_SUB_NM") { // 간납처
+				vNAME = fnGetCTRLVal(txtACCNT_SUB_NM);
+
+				var obj = new Object();
+				var Array = [];
+
+				obj.pReturnMethod = "txtACCNT_SUB_NM_ButtonClick_Result";
+				obj.pType = "ACCNTNM";
+				obj.pSelTP = "1";
+				obj.pValue = vNAME;
+				obj.pAccntId = "";
+
+				var strJsonData = JSON.stringify(obj);
+				popCM0040AccntList.PerformCallback(strJsonData);
+			} else if (vSender == "txtREQ_EMPNM") { // 요청자
+				vNAME = fnGetCTRLVal(txtREQ_EMPNM);
+
+				var obj = new Object();
+				var Array = [];
+
+				obj.pReturnMethod = "txtREQ_EMPNM_ButtonClick_Result";
+				obj.pEmpNm = vNAME;
+
+				var strJsonData = JSON.stringify(obj);
+				popCM0060List.PerformCallback(strJsonData);
+			}
+		}
+
+		function OnTextChanged(s, e) {
+			var varCode = s.GetText();
+			var vSender = "";
+
+			// s.name 앞부분에 다른 텍스트들이 잔뜩 붙어 있어서 떼어냄
+			if (s.name.indexOf("txt") > 0) {
+				vSender = s.name.substring(s.name.indexOf("txt"), s.name.length);
+			}
+
+			if (vSender == "txtACCNT_NM") {
+				if (varCode == "") {
+
+					fnSetCTRLVal(txtACCNT_ID, "");
+					fnSetCTRLVal(txtACCNT_NM, "");
+				} else {
+					$.ajax({
+						type: "POST",
+						async: false,
+						url: strAjaxUrl,
+						data: {
+							requestType: "GetAccntBasicInfo",
+							SELTP: "1",
+							ACCNTNM: varCode,
+							ACCNTID: "",
+							VATNO: ""
+						},
+						dataType: "json",
+						success: function(data) {
+							if (data.ROW_CNT != 1) {
+								OnShowPopUp(s, e);
+							} else {
+
+								fnSetCTRLVal(txtACCNT_ID, data.ACCNT_ID);
+								fnSetCTRLVal(txtACCNT_NM, data.ACCNT_NM);
+							}
+						}
+					});
+				}
+			} else if (vSender == "txtACCNT_SUB_NM") {
+				if (varCode == "") {
+
+					fnSetCTRLVal(txtACCNT_SUB_ID, "");
+					fnSetCTRLVal(txtACCNT_SUB_NM, "");
+				} else {
+					$.ajax({
+						type: "POST",
+						async: false,
+						url: strAjaxUrl,
+						data: {
+							requestType: "GetAccntBasicInfo",
+							SELTP: "1",
+							ACCNTNM: varCode,
+							ACCNTID: "",
+							VATNO: ""
+						},
+						dataType: "json",
+						success: function(data) {
+							if (data.ROW_CNT != 1) {
+								OnShowPopUp(s, e);
+							} else {
+
+								fnSetCTRLVal(txtACCNT_SUB_ID, data.ACCNT_ID);
+								fnSetCTRLVal(txtACCNT_SUB_NM, data.ACCNT_NM);
+							}
+						}
+					});
+				}
+			} else if (vSender == "txtREQ_EMPNM") {
+				if (varCode == "") {
+
+					fnSetCTRLVal(txtREQ_EMPID, "");
+					fnSetCTRLVal(txtREQ_EMPNM, "");
+				} else {
+					$.ajax({
+						type: "POST",
+						async: false,
+						url: strAjaxUrl,
+						data: {
+							requestType: "GetEmpInfo",
+							EMPNM: varCode
+						},
+						dataType: "json",
+						success: function(data) {
+							if (data.ROW_CNT != 1) {
+								OnShowPopUp(s, e);
+							} else {
+
+								fnSetCTRLVal(txtREQ_EMPID, data.EMP_ID);
+								fnSetCTRLVal(txtREQ_EMPNM, data.EMP_NM);
+							}
+						}
+					});
+				}
+			}
+		}
+
+		function txtACCNT_NM_ButtonClick_Result(RET_ACCT_ID, RET_ACCT_NM, RET_VAT_NO) {
+
+			fnSetCTRLVal(txtACCNT_ID, RET_ACCT_ID);
+			fnSetCTRLVal(txtACCNT_NM, RET_ACCT_NM);
+		}
+
+		function txtACCNT_SUB_NM_ButtonClick_Result(RET_ACCT_ID, RET_ACCT_NM, RET_VAT_NO) {
+
+			fnSetCTRLVal(txtACCNT_SUB_ID, RET_ACCT_ID);
+			fnSetCTRLVal(txtACCNT_SUB_NM, RET_ACCT_NM);
+		}
+
+		function txtREQ_EMPNM_ButtonClick_Result(RET_CODE, RET_NAME) {
+
+			fnSetCTRLVal(txtREQ_EMPID, RET_CODE);
+			fnSetCTRLVal(txtREQ_EMPNM, RET_NAME);
+		}
+
+		function grd1_FocusedRowChanged(s, e) {
+			var vRow = s.GetFocusedRowIndex();
+
+			if (vRow > -1) {
+				s.GetRowValues(s.GetFocusedRowIndex(), "ROW_ID;CUST_ID;CUST_SUB_ID;ORDER_ACCNT_TYPE_CD;APPROVAL_FLG", grd1_OnGetValues);
+			}
+		}
+
+		function grd1_OnGetValues(values) {
+			var strRowId = values[0];
+			var strCUST_ID = values[1];
+			var strCUST_SUB_ID = values[2];
+			var strORDER_ACCNT_TYP_CD = values[3];
+			var strAPPROVAL_FLG = values[4];
+
+			fnSetCTRLVal(hidRowId, strRowId);
+			fnSetCTRLVal(hidORDSTAT, strAPPROVAL_FLG);
+			fnSetCTRLVal(hidORDSEP, strORDER_ACCNT_TYP_CD);
+			fnSetCTRLVal(hidACCNT_ID, strCUST_ID);
+			fnSetCTRLVal(hidACCNT_SUB_ID, strCUST_SUB_ID);
+
+			if (strAPPROVAL_FLG == "Y") {
+				SetBtnStatus(false);
+			} else {
+				SetBtnStatus(true);
+			}
+
+			dxCommand = "Select";
+
+			var obj = new Object();
+			var Array = [];
+
+			obj.P_ROWID = strRowId;
+			obj.P_Command = dxCommand;
+
+			var strJsonData = JSON.stringify(obj);
+
+			grd2.PerformCallback(strJsonData);
+			grdFileList.PerformCallback(strJsonData);
+		}
+
+		function SetBtnStatus(blnStatus) {
+			btnRowDel.SetEnabled(blnStatus);
+			btnITEM.SetEnabled(blnStatus);
+			uplExcel.SetEnabled(blnStatus);
+		}
+
+		function grd2_BatchEditStartEditing(s, e) {
+			var vORDSTAT = fnGetCTRLVal(hidORDSTAT);
+
+			if (vORDSTAT != "1") {
+				e.cancel = true;
+			} else if (e.focusedColumn.fieldName == "QUANTITY") {
+				e.cancel = false;
+			} else {
+				e.cancel = true;
+			}
+		}
+
+		function grd2_BatchEditEndEditing(s, e) {
+			window.setTimeout(function() {
+				try {
+					// 금액 = 주문수량 * 단가
+					var vORDQTY = toInt(grd2.batchEditApi.GetCellValue(e.visibleIndex, "ORDQTY"));
+					var vPRICE = toInt(grd2.batchEditApi.GetCellValue(e.visibleIndex, "PRICE"));
+					var vORDAMT = vORDQTY * vPRICE;
+
+					grd2.batchEditApi.SetCellValue(e.visibleIndex, "ORDAMT", vORDAMT);
+
+					gridSum();
+				} catch (error) {
+					COMMON_MSGBOX("!", error);
+				}
+			}, 10);
+		}
+
+
+
+
+		// ---------- 행삭제 ------------------------------------------------------------------
+		// 행삭제 버튼 클릭 시
+		function btnRowDel_Click(s, e) {
+			m_EditFlag = "DelRow";
+
+			var numFocusRow = numEditedRow;
+
+			grd1.batchEditApi.DeleteRow(numFocusRow);
+			grd1.batchEditApi.EndEdit();
+
+			window.setTimeout(function() {
+				gridSum();
+			}, 50);
+		}
+
+		// ---------- 제품선택 팝업 ------------------------------------------------------------------
+
+		// 제품선택 버튼 클릭 시
+		function btnITEM_Click(s, e) {
+			var strROWID = fnGetCTRLVal(hidRowId);
+
+			if (strROWID == "" || strROWID == null) {
+
+				COMMON_MSGBOX("!", "선택된 주문접수건이 없습니다.");
+				return;
+			}
+
+			var strACCNTID = fnGetCTRLVal(hidACCNT_ID);
+			var strACCNTSUBID = fnGetCTRLVal(hidACCNT_SUB_ID);
+			var strORDSEP = fnGetCTRLVal(hidORDSEP);
+
+
+			var obj = new Object();
+			var Array = [];
+
+			obj.pReturnMethod = "btnITEM_ButtonClick_Result";
+			obj.pSelTP = "0";
+			obj.pValue = "";
+			obj.pAccntId = strACCNTID;
+			obj.pAccntSubId = strACCNTSUBID;
+			obj.pOrdSep = strORDSEP;
+			obj.pSearch = "0";
+
+			var strJsonData = JSON.stringify(obj);
+			popCM0050List.PerformCallback(strJsonData);
+		}
+
+		// 거래처 변경 시 처리 Function
+		function btnITEM_ButtonClick_Result(RET_CODE, RET_NAME, RET_PACK, RET_BOX) {
+
+			var strACCNTID = fnGetCTRLVal(hidACCNT_ID);
+			var strACCNTSUBID = fnGetCTRLVal(hidACCNT_SUB_ID);
+			var strPRODID = RET_CODE;
+			var strORDSEP = fnGetCTRLVal(hidORDSEP);
+
+			var strORDSTEP = "";
+			var numCONQTY = 0;
+
+
 			$.ajax({
 				type: "POST",
 				async: false,
 				url: strAjaxUrl,
 				data: {
-					requestType: "SetLoginInfo",
-					LOGINIFO: strJsonInfo,
-					COMCD: strCOMCD,
-					DBTYPE: strDBTYPE
+					requestType: "SetProdAddInfo",
+					ACCNTID: strACCNTID,
+					ACCNTSUBID: strACCNTSUBID,
+					PRODID: strPRODID,
+					ORDSEP: strORDSEP
 				},
 				dataType: "json",
 				error: function(xhr, ajaxOptions, thrownError) {
@@ -87,130 +589,171 @@
 					return;
 				},
 				success: function(data) {
-
-					if (data.ROW_CNT == 1) {
-
-						retResult = true;
-					} else {
-						retResult = false;
-					}
+					//계약여부, 주문잔량 바인딩
+					strORDSTEP = data.PRICEYN == "Y" ? "계약" : "";
+					numCONQTY = toFloat(data.CONQTY);
 
 				}
 			});
 
-			return retResult;
+			//동일한 품목이나 삭제된 품목여부 확인
+			if (!ChkDupProdItem(strPRODID)) {
+				grd2.AddNewRow();
+				grd2.batchEditApi.EndEdit(); //stop editing before changing values
+
+				var visibleIndices = grd2.batchEditApi.GetRowVisibleIndices(false);
+
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "SEQ", visibleIndices[visibleIndices.length - 1] * -1);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "PROD_NM", RET_NAME);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "PACK_UNIT", RET_PACK);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "BOX_UNIT", RET_BOX);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "QUANTITY", 0);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "ORDSTEP", strORDSTEP);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "CONQTY", numCONQTY);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "PROD_ID", RET_CODE);
+				grd2.batchEditApi.SetCellValue(visibleIndices[visibleIndices.length - 1], "NEWYN", "Y");
+			}
+
+			//grd1.UpdateEdit();
+
+			window.setTimeout(function() {
+				gridSum();
+			}, 50);
+
 		}
 
-		function onReFreshTreview() {
+		function ChkDupProdItem(strPRODID) {
+			var visibleIndices = grd2.batchEditApi.GetRowVisibleIndices();
+			var retInfo = false;
 
-			if (strRefreshFlag) {
-				var strNode = sessionGet("MENUNODE");
-				var node = navTreeView.GetNodeByName(strNode);
-				if (node != null) {
-					//Iterate through the parent nodes to expand them
-					var nodesparent = node.parent;
-					while (nodesparent != null) {
-						nodesparent.SetExpanded(true);
-						nodesparent = nodesparent.parent
+			for (var i = 0; i < visibleIndices.length; i++) {
+				var visibleIndex = visibleIndices[i];
+				var blnDeleteRow = grd2.batchEditApi.IsDeletedRow(visibleIndex);
+				var strRowPRODID = grd2.batchEditApi.GetCellValue(visibleIndex, "PROD_ID") == null ? "" : grd2.batchEditApi.GetCellValue(visibleIndex, "PROD_ID");
+
+				if (strRowPRODID == strPRODID && grd2.batchEditApi.IsDeletedRow(visibleIndex) == false) {
+					retInfo = true;
+					break;
+				}
+			}
+
+			return retInfo;
+
+		}
+
+		// ---------- 그리드 배치처리 ------------------------------------------------------------------
+
+		function grd2_BatchEditStartEditing(s, e) {
+
+			if (e.focusedColumn.fieldName == "QUANTITY") {
+				e.cancel = false;
+			} else {
+				e.cancel = true;
+			}
+		}
+
+		function grD2_BatchEditEndEditing(s, e) {
+
+			var cellInfo = grd2.batchEditApi.GetEditCellInfo();
+			numEditedRow = cellInfo.rowVisibleIndex;
+
+
+			window.setTimeout(function() {
+				gridSum();
+			}, 50);
+
+		}
+
+
+
+		// 그리드 하단 Summary Update
+		function gridSum() {
+			var indiciesGrd2 = grd2.batchEditApi.GetRowVisibleIndices();
+			var vQUANTITY = 0;
+			var vSumQUANTITY = 0;
+			var vCONQTY = 0;
+			var vSumCONQTY = 0;
+
+			for (var iRow = 0; iRow < indiciesGrd2.length; iRow++) {
+
+				if (grd2.batchEditApi.IsDeletedRow(indiciesGrd2[iRow]) == false) {
+					vQUANTITY = toInt(grd2.batchEditApi.GetCellValue(indiciesGrd2[iRow], "QUANTITY"));
+					vCONQTY = toInt(grd2.batchEditApi.GetCellValue(indiciesGrd2[iRow], "CONQTY"));
+
+					if (vQUANTITY != null) {
+						vSumQUANTITY = vSumQUANTITY + vQUANTITY;
 					}
 
-					//Select the found node
-					navTreeView.SetSelectedNode(node);
+					if (vCONQTY != null) {
+						vSumCONQTY = vSumCONQTY + vCONQTY;
+					}
 				}
+			}
 
+			tdFooterGrd2_QUANTITY.innerText = SetCommaValue(vSumQUANTITY);
+			tdFooterGrd2_CONQTY.innerText = SetCommaValue(vSumCONQTY);
+
+		}
+
+
+		function GetMaxLineId() {
+			var visibleIndices = grd2.batchEditApi.GetRowVisibleIndices();
+			var retInfo = toInt(1);
+
+			for (var i = 0; i < visibleIndices.length; i++) {
+				var visibleIndex = visibleIndices[i];
+				var iLINEID = toInt(grd2.batchEditApi.GetCellValue(visibleIndex, "SEQ")) == null ? 0 : toInt(grd2.batchEditApi.GetCellValue(visibleIndex, "SEQ"));
+
+				if (retInfo <= iLINEID) {
+					retInfo = iLINEID + 1;
+				}
+			}
+
+			return retInfo;
+		}
+
+		// ---------- 첨부화일처리 ------------------------------------------------------------------
+
+		function uplExcel_Complete(s, e) {
+			numUploadCnt++;
+
+			var strCallBack = "Custom";
+
+			if ((numUploadSelect == numUploadCnt) && numUploadCnt > 0) {
+
+				grdFileList.PerformCallback(strCallBack);
 			}
 		}
 
 
-		function OnNodeClick(strURL) {
+		function uplExcel_TextChanged(s, e) {
 
-			var url = strURL.split("#")[0].toString();
-			var menuNode = strURL.split("#")[1].toString();
-			var parentNode = strURL.split("#")[2].toString();
-
-			var strSrcUrl = url + "?MENUID=" + menuNode;
-
-			document.getElementById("infoPane").src = strSrcUrl;
-			sessionSet("MENUURL", url);
-			sessionSet("MENUNODE", menuNode);
-			sessionSet("MENUPNOE", parentNode);
-		}
+			var numSetFile = uplExcel.GetSelectedFiles();
+			var items = uplExcel.GetText();
 
 
-		//function initScrollPlugin() {
+			if (items != "" || items != null) {
 
-		//    $("#sidebar").mCustomScrollbar({
-		//        theme: "minimal-dark",
-		//        scrollInertia: 300
-		//    });
-		//}
-
-
-		//function scrollToSideBarElement(el) {
-		//    setTimeout(function () {
-		//        var $el = $(el);
-		//        if (!$el.is(":mcsInSight")) {
-		//            $("#sidebar").mCustomScrollbar("scrollTo", $el, {
-		//                scrollInertia: 0
-		//            });
-		//        }
-		//    }, 300);
-		//}
-
-
-		function navTreeView_OnNodeClick(s, e) {
-
-			//scrollToSideBarElement(e.htmlElement);
-
-			if (e.node.GetNodeCount() > 0) {
-				var expanded = e.node.GetExpanded();
-				s.CollapseAll();
-				e.node.SetExpanded(!expanded);
+				///numUploadSelect = numSetFile.length;
+				numUploadSelect = items.split(',').length;
+				numUploadCnt = 0;
+				uplExcel.Upload();
+				//LoadingPanel.Show();
 			}
 
 		}
 
-		function reCallMainPage() {
-			sessionSet("MENUURL", "");
-			sessionSet("MENUNODE", "");
-			sessionSet("MENUPNOE", "");
-
-			window.open("Main.aspx?MENUID=HOME", "_self");
-		}
-
-		function fnLogOut() {
-			var onfunction = function() {
-				window.location.href = "/";
-			}
-			//var onfunction = function () { alert("@@@"); }
-			COMMON_MSGBOX_AF("!", "로그아웃되었습니다.", onfunction);
-		}
-
-		function fnChangPassWord() {
-			COMMON_MSGBOX("!", "패스워드를 변경합니다.");
-		}
-
-		function fnCallGroupWare() {
-			COMMON_MSGBOX("!", "그룹웨어페이지를 호출합니다.");
-		}
-
-		function fnCallEIS() {
-			COMMON_MSGBOX("!", "EIS 페이지를 호출합니다.");
-		}
-
-		function fnCallEHR() {
-			COMMON_MSGBOX("!", "e-HR 페이지를 호출합니다.");
-		}
+		//]]>
 	</script>
 </head>
 
 <body class="h-100">
-	<form method="post" action="./Main.aspx?MENUID=HOME" id="form1" class="h-100">
+	<form method="post" action="./SD0020.aspx" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'hidDftBtn')" id="form1" class="h-100" onkeydown="return captureReturnKey(event)" enctype="multipart/form-data">
 		<div class="aspNetHidden">
 			<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
 			<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
 			<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
-				value="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" />
+				value="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" />
 		</div>
 
 		<script type="text/javascript">
@@ -233,274 +776,247 @@
 
 		<script src="/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZL8brbRH6PU3OF4j7YF1snQkxhtSd-ik02YwIOTkm04giCKpkemqsMs_tZ_Wr3OCSQ2&amp;t=637034445464690003" type="text/javascript"></script>
 
+
+		<script src="/ScriptResource.axd?d=B_UHbsmfULLw-9ih4t4bweV_-_qiPPord0VTdA_utFeiPDNrXFt-MW892eMpfL4O8jbMdTjvRW7cVaP445J3cfeDUi03Edt8z6E3gRGpP3QJAmb0O4dvwOUzOEPFc8B-smiPd2e0YPwGeKhbY7naHLte1h6Nq-gTO4tTJkAV5341&amp;t=ffffffffa580202a"
+			type="text/javascript"></script>
+		<script src="/ScriptResource.axd?d=aLbq1MoAvui0PhKS8ZfaOn7G4BVSc7frBVpeK0pfjKbyynnGkuJUgyAMefoRMdXRtmYUyll05xLyXesod79KCnoJe8b6pxGT06Y-cDDiHm8mX4PtOprCw9780YiFcgdUdemp9GVnmFMab5PGeYkqKA25lTu1RPZ3ftIM56QlBWg1&amp;t=ffffffffa580202a"
+			type="text/javascript"></script>
+		<script src="/WebResource.axd?d=JoBkLzP19aTuxbWOhHobYkI1nL4OAfoTu0-mnOwdkH-jnU9BSAv_b_IB0LQWA4ZMhent5RVKAHWXAR4I-4DxAw2&amp;t=637034445464690003" type="text/javascript"></script>
 		<div class="aspNetHidden">
 
-			<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="202EA31B" />
-			<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="4DgOUY3QbucjFXB8mxoffT7HlbaKpvQAJkoutKhcQL5mZxSgJ/9C3CXdzLPcjOhvdOWh0jqNNcx2+yG7HFl3ctQGaCy7Wvj2OG0VevtsUO5u9s+AgIiN7POwOknjqjikCv47RJBWlopfXY5GfA4FDA==" />
+			<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="9B101CE3" />
+			<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
+				value="nkI2eosiNZV3HY0r2YOo/4lD2hq5hQH8mw83fhXYGYIYWvESftmkE8FFlsx1LorqlPzEbK3Qu2bldNr9klu9pEtMvQd1w23ub+sFN5j8HDZuzTN4XtYf58BsWgtQIP9hjm07U2pdIi/EcgzyNOMKRAXqM8DAQv3BKwnTGzATucPD5c+xev2SdYydK6lZErJYUQdgIGucNcquLEmnqHoWgSUCa6OGjcjUISDGc3drfaF6Fwb3AOMLIwyhNoV3LDhDeoX9PHuHm7abpJOf9V8/MkxIrB6kLCZrkZPfGqB0QIVP0Wtk5BNHbxZCXNhMCDOzV2igWxGfwB8BpgVh4d1pEdUEBOAtpL8BXqHDJ5cNChn7KWB7tFU5KoWkqXzwUuk7ORTj1GqbtNxPTi+v5Eq8TsWuGKLyhqsDOUxGbN+Px8l7Vt7YBzf9HVF/YVMGBElI4PjTlkVCV6NyDmAgMHJN1jvJ3jZ1ilw97lNsNW/nStuNHirwQMyDXxqOqp4YFxljg+5G6GWo68z7BRfsRd3hf+MEbbZFdwpL716K2e3Ux7J1SIu7y9uVOu6Vf7F0LtuS" />
 		</div>
+		<script type="text/javascript">
+			//<![CDATA[
+			Sys.WebForms.PageRequestManager._initialize('ctl00$ScriptManager1', 'form1', ['tctl00$CallbackPanelBase$UpdatePanel', 'CallbackPanelBase_UpdatePanel'], [], [], 90, 'ctl00');
+			//]]>
+		</script>
+
 		<div class="dbt-header-separator shadow"></div>
 		<div class="d-flex h-100">
 			<div class="d-none d-lg-flex flex-shrink-0 flex-column dbt-side-nav">
-				<div class="h-100 overflow-hidden dbt-area-highlight lnav_width shadow_l flex_container">
+				<div class="h-100 overflow-hidden dbt-area-highlight lnav_width shadow_l">
+
 
 					<div class="dbt-header-part dbt-header-title">
 						<span class="logo_img"></span>
 					</div>
-					<a href="javascript:void(0)" onclick="reCallMainPage();" class="lnb_title">
-						<i class="fas fa-folder-open"></i>전체 카테고리</a>
-<!--- 스크롤바를 만들기 위한 section 구분 --->
-					<section id="sidebar">
-						<script id="dxss_184150023">
-							<!--
-							var ASPx, dx, DevExpress;
-							! function n(t, o, e, r, i, a, c) {
-								var u = [],
-									l = [],
-									d = 0,
-									f = [],
-									s = [],
-									h = !1;
 
-								function C(n, r, i) {
-									n[i] = function() {
-										r(t, o, e)
-									}
-								}
+					<a href="../Main.aspx?MENUID=HOME" target="_self" class="lnb_title"><i class="fas fa-folder-open"></i>전체 카테고리</a>
+					<script id="dxss_184150023">
+						<!--
+						var ASPx, dx, DevExpress;
+						! function n(t, o, e, r, i, a, c) {
+							var u = [],
+								l = [],
+								d = 0,
+								f = [],
+								s = [],
+								h = !1;
 
-								function v() {
-									return r == d
+							function C(n, r, i) {
+								n[i] = function() {
+									r(t, o, e)
 								}
+							}
 
-								function m() {
-									return !0
-								}
+							function v() {
+								return r == d
+							}
 
-								function E(n) {
-									return function() {
-										throw new Error(n)
-									}
-								}
+							function m() {
+								return !0
+							}
 
-								function x(n) {
-									n()
+							function E(n) {
+								return function() {
+									throw new Error(n)
 								}
-								var S = -1;
+							}
 
-								function b(n, t, o, e) {
-									var r = ++S;
-									return function() {
-										i(function() {
-											r == S && o() && (S--, function(n) {
-												for (var t = n.length, o = 0, e = null;
-													(e = n[o]) && o < t; o++) e && e();
-												n.length = 0
-											}(t), e())
-										})
-									}
-								}
-								var p = b(0, f, function() {
-										return h && v()
-									}, function() {
-										t.attachToReady = x
-									}),
-									T = b(0, s, m, function() {
-										t.attachToLoad = x, p()
-									}),
-									w = b(0, l, m, function() {
-										t.SS = function(n) {
-											n(t, o, e)
-										}, T()
-									}),
-									A = b(0, u, v, function() {
-										t.IS = E("Too late"), w()
-									}),
-									y = 0;
-								t.SS = function(n) {
-									var t = y++;
+							function x(n) {
+								n()
+							}
+							var S = -1;
+
+							function b(n, t, o, e) {
+								var r = ++S;
+								return function() {
 									i(function() {
-										C(l, n, t)
+										r == S && o() && (S--, function(n) {
+											for (var t = n.length, o = 0, e = null;
+												(e = n[o]) && o < t; o++) e && e();
+											n.length = 0
+										}(t), e())
 									})
-								};
-								var P = 0;
-								t.IS = function(n, t) {
-									i(function() {
-										for (C(u, n, t), d++; P < d && u[P];) u[P] = u[P]() && null, P++;
-										A()
-									})
-								}, t.attachToReady = f.push.bind(f), t.attachToLoad = s.push.bind(s), t.initResourceLoader = n, c.addEventListener("DOMContentLoaded", function() {
-									r = c.querySelectorAll("script[id^=dxis_][defer]").length, A()
-								}), a.addEventListener("load", function() {
-									h = !0, p()
-								});
-								var L = ["BeginCallback", "BrowserWindowResized", "CallbackError", "ControlsInitialized", "EndCallback", "ValidationCompleted"],
-									B = ["ForEachControl", "Get", "GetByName", "GetControlsByPredicate", "GetControlsByType"],
-									G = [];
-								var g = L.reduce(function(n, t) {
-									return ((n[t] = {}).AddHandler = function(n) {
-										G.push({
-											e: t,
-											h: n
-										})
-									}) && n
-								}, {});
-								g = B.reduce(function(n, t) {
-									return (n[t] = E("The environment has not been initialized. To access the " + t + " member, call the member from the ControlsInitialized event's handler.")) && n
-								}, g), t.loadControlCollectionPreloadHandlers = function(n) {
-									G.forEach(function(t) {
-										n[t.e].AddHandler(t.h)
-									}), L.forEach(function(t) {
-										g[t] = n[t]
-									}), B.forEach(function(t) {
-										g[t] = n[t].bind(n)
-									}), t.loadControlCollectionPreloadHandlers = G = g = null
-								}, a.ASPxClientControl = {
-									GetControlCollection: function() {
-										return g
-									}
 								}
-							}(ASPx || (ASPx = {}), dx || (dx = {}), DevExpress || (DevExpress = {}), -1, window.requestAnimationFrame || setTimeout, window, document);
-
-							//
-							-->
-						</script>
-						<script id="dxis_1114114121" src="../Content/11-boual.js"></script>
-						<script id="dxis_1019809068" src="../Content/23-boual.js" defer></script>
-						<script id="dxis_346246450" src="../Content/64-boual.js"></script>
-						<script id="dxis_580618093" src="/DXR.axd?r=1_13,1_14,1_15,1_46,23_0,23_1,23_10,1_17,1_24,1_33,23_3,23_4,23_133,23_143,23_134,23_139,23_2,23_136,1_41,23_8,1_182,23_31,1_183,1_184,23_30-eoual&amp;order=1" defer></script>
-						<script id="dxss_697210726">
-							<!--
-							ASPx.SS(function(ASPx, dx) {
-								ASPx.AccessibilitySR.DefaultCallbackMessage = 'Callback in process.';
-
+							}
+							var p = b(0, f, function() {
+									return h && v()
+								}, function() {
+									t.attachToReady = x
+								}),
+								T = b(0, s, m, function() {
+									t.attachToLoad = x, p()
+								}),
+								w = b(0, l, m, function() {
+									t.SS = function(n) {
+										n(t, o, e)
+									}, T()
+								}),
+								A = b(0, u, v, function() {
+									t.IS = E("Too late"), w()
+								}),
+								y = 0;
+							t.SS = function(n) {
+								var t = y++;
+								i(function() {
+									C(l, n, t)
+								})
+							};
+							var P = 0;
+							t.IS = function(n, t) {
+								i(function() {
+									for (C(u, n, t), d++; P < d && u[P];) u[P] = u[P]() && null, P++;
+									A()
+								})
+							}, t.attachToReady = f.push.bind(f), t.attachToLoad = s.push.bind(s), t.initResourceLoader = n, c.addEventListener("DOMContentLoaded", function() {
+								r = c.querySelectorAll("script[id^=dxis_][defer]").length, A()
+							}), a.addEventListener("load", function() {
+								h = !0, p()
 							});
-							//
-							-->
-						</script>
-						<nav class="dxbs-tree" id="navTreeView">
-							<ul class="nav nav-pills flex-column">
-								<li class="nav-item" role="presentation">
-									<a class="nav-link" aria-expanded="false" href="javascript:;">
-										<span aria-hidden="true" class="fa fa-plus plusicon"></span>
-										<span class="text plusicon_text">시스템 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation">
-											<a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/CodeMaster.aspx#CodeMaster#SYSGRP00&#39;)"><span class="text">공통코드</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/UserMaster.aspx#UserMaster#SYSGRP00&#39;)"><span class="text">사용자 등록</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/MenuMaster.aspx#MenuMaster#SYSGRP00&#39;)"><span class="text">메뉴관리</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/UserGroup.aspx#UserGroup#SYSGRP00&#39;)"><span class="text">권한그룹</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/RoleManage.aspx#RoleManage#SYSGRP00&#39;)"><span class="text">권한그룹별 권한 설정</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/UserRole.aspx#UserRole#SYSGRP00&#39;)"><span class="text">권한그룹별 사용자 설정</span></a></li>
-									</ul>
-								</li>
-								<li class="nav-item" role="presentation">
-									<a class="nav-link" aria-expanded="false" href="javascript:;">
-										<span aria-hidden="true" class="fa fa-minus minusicon"></span>
-									<span class="text plusicon_text">도매 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0010.aspx#WM0010#WMGRP00&#39;)"><span class="text">도매 주문 통제</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0020.aspx#WM0020#WMGRP00&#39;)"><span class="text">도매 주문 요청</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0030.aspx#WM0030#WMGRP00&#39;)"><span class="text">도매 주문 현황</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0040.aspx#WM0040#WMGRP00&#39;)"><span class="text">도매 주문 수량 확정</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0050.aspx#WM0050#WMGRP00&#39;)"><span class="text">도매 주문 승인</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0060.aspx#WM0060#WMGRP00&#39;)"><span class="text">도매 반품 요청</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0070.aspx#WM0070#WMGRP00&#39;)"><span class="text">도매 반품 현황</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0080.aspx#WM0080#WMGRP00&#39;)"><span class="text">도매 반품 상신</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0090.aspx#WM0090#WMGRP00&#39;)"><span class="text">도매 거래처 원장</span></a></li>
-									</ul>
-								</li>
-								<li class="nav-item" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dxbs-icon dxbs-icon-plus"></span><span class="text">주문 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0010.aspx#SD0010#SDGRP00&#39;)"><span class="text">주문서 접수</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0020.aspx#SD0020#SDGRP00&#39;)"><span class="text">주문서 접수 현황</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0030.aspx#SD0030#SDGRP00&#39;)"><span class="text">주문서 접수 승인</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0040.aspx#SD0040#SDGRP00&#39;)"><span class="text">주문서 등록(정상)</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0050.aspx#SD0050#SDGRP00&#39;)"><span class="text">주문서 등록(무상)</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SD/SD0050.aspx#SD0060#SDGRP00&#39;)"><span class="text">주문서 등록(선납)</span></a></li>
-									</ul>
-								</li>
-								<li class="nav-item" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dxbs-icon dxbs-icon-plus"></span><span class="text">재고 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;MM/MM0010.aspx#MM0010#MMGRP00&#39;)"><span class="text">재고 현황</span></a></li>
-									</ul>
-								</li>
-								<li class="nav-item" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dxbs-icon dxbs-icon-plus"></span><span class="text">입금 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;TR/TR0040.aspx#TR0040#TRGRP00&#39;)"><span class="text">입금 업로드</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;TR/TR0050.aspx#TR0050#TRGRP00&#39;)"><span class="text">입금 업로드 현황</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;TR/TR0010.aspx#TR0010#TRGRP00&#39;)"><span class="text">금액분류 및 확인</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;TR/TR0020.aspx#TR0020#TRGRP00&#39;)"><span class="text">입금 등록</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;TR/TR0030.aspx#TR0030#TRGRP00&#39;)"><span class="text">입금 승인</span></a></li>
-									</ul>
-								</li>
-								<li class="nav-item" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dxbs-icon dxbs-icon-plus"></span><span class="text">마스터 관리</span></a>
-									<ul class="nav nav-pills flex-column dx-hc">
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;AD/AD0010.aspx#AD0010#ADGRP00&#39;)"><span class="text">거래처 관리</span></a></li>
-										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;AD/AD0020.aspx#AD0020#ADGRP00&#39;)"><span class="text">담보 관리</span></a></li>
-									</ul>
-								</li>
-							</ul><span id="navTreeView_SEB" aria-hidden="true" class="expand-btn dx-hc dxbs-icon dxbs-icon-plus"></span><span id="navTreeView_SCB" aria-hidden="true" class="expand-btn dx-hc dxbs-icon dxbs-icon-minus"></span>
-						</nav>
-					</section>
-					<div class="section_footer"></div>
-				</div>
-			</div>
-			<div class="d-flex flex-fill flex-column dbt-content">
+							var L = ["BeginCallback", "BrowserWindowResized", "CallbackError", "ControlsInitialized", "EndCallback", "ValidationCompleted"],
+								B = ["ForEachControl", "Get", "GetByName", "GetControlsByPredicate", "GetControlsByType"],
+								G = [];
+							var g = L.reduce(function(n, t) {
+								return ((n[t] = {}).AddHandler = function(n) {
+									G.push({
+										e: t,
+										h: n
+									})
+								}) && n
+							}, {});
+							g = B.reduce(function(n, t) {
+								return (n[t] = E("The environment has not been initialized. To access the " + t + " member, call the member from the ControlsInitialized event's handler.")) && n
+							}, g), t.loadControlCollectionPreloadHandlers = function(n) {
+								G.forEach(function(t) {
+									n[t.e].AddHandler(t.h)
+								}), L.forEach(function(t) {
+									g[t] = n[t]
+								}), B.forEach(function(t) {
+									g[t] = n[t].bind(n)
+								}), t.loadControlCollectionPreloadHandlers = G = g = null
+							}, a.ASPxClientControl = {
+								GetControlCollection: function() {
+									return g
+								}
+							}
+						}(ASPx || (ASPx = {}), dx || (dx = {}), DevExpress || (DevExpress = {}), -1, window.requestAnimationFrame || setTimeout, window, document);
 
-				<div class="dbt-header-part dbt-area-highlight">
-					<script id="dxss_1082586957">
+						//
+						-->
+					</script>
+					<script id="dxis_1114114121" src="/DXR.axd?r=1_11-boual"></script>
+					<script id="dxis_1019809068" src="/DXR.axd?r=1_252,1_12,1_23-boual&amp;order=0" defer></script>
+					<script id="dxis_346246450" src="/DXR.axd?r=1_64-boual"></script>
+					<script id="dxis_406480514"
+						src="/DXR.axd?r=1_13,1_14,1_15,1_46,23_0,23_1,23_10,1_17,1_24,1_33,23_3,23_4,23_133,23_143,23_134,23_139,23_2,23_136,1_182,23_31,1_60,23_32,1_183,1_184,1_185,1_21,1_22,1_190,1_192,23_39,1_194,23_38,23_30,1_186,1_193,23_35,23_37,1_19,1_213,1_224,1_225,1_211,1_227,1_236,1_238,1_239,1_229,1_230,1_234,1_240,23_11,23_12,23_18,23_15,1_216,1_219,1_220,1_217,1_221,23_13,23_14,1_47,23_50,1_41,23_8,1_49-eoual&amp;order=1"
+						defer></script>
+					<script id="dxss_697210726">
 						<!--
 						ASPx.SS(function(ASPx, dx) {
-							ASPx.AccessibilitySR.AddStringResources({
-								'MenuVerticalText': 'Vertical',
-								'MenuHorizontalText': 'Horizontal',
-								'MenuText': 'menu',
-								'MenuBarText': 'menubar',
-								'MenuLevelText': 'level'
-							});
-
+							ASPx.AccessibilitySR.DefaultCallbackMessage = 'Callback in process.';
 
 						});
 						//
 						-->
 					</script>
+					<nav class="dxbs-tree dbt-treeview" id="navTreeView">
+						<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0">
+							<li class="nav-item dbt-treeview-node" role="presentation">
+								<a class="nav-link" aria-expanded="false" href="javascript:;">
+									<span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-col m-0"></span>
+									<span class="text">시스템 관리</span>
+								</a>
+								<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0 dx-hc">
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/CodeMaster.aspx"><span class="text">공통코드</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/UserMaster.aspx"><span class="text">사용자 등록</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/MenuMaster.aspx"><span class="text">메뉴관리</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/UserGroup.aspx"><span class="text">권한그룹</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/RoleManage.aspx"><span class="text">권한그룹별 권한 설정</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../SystemManage/UserRole.aspx"><span class="text">권한그룹별 사용자 설정</span></a></li>
+								</ul>
+							</li>
+							<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-col m-0"></span><span class="text">도매 관리</span></a>
+								<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0 dx-hc">
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../WM/WM0010.aspx"><span class="text">도매 주문 통제</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../WM/WM0020.aspx"><span class="text">도매 주문 요청</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../WM/WM0030.aspx"><span class="text">도매 주문 현황</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../WM/WM0040.aspx"><span class="text">도매 주문 수량 확정</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../WM/WM0050.aspx"><span class="text">도매 주문 승인</span></a></li>
+								</ul>
+							</li>
+							<li class="nav-item dbt-treeview-node" role="presentation">
+								<a class="nav-link" aria-expanded="true" href="javascript:;">
+									<span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-ex m-0 active"></span>
+									<span class="text">주문 관리</span></a>
+								<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0">
+									<li class="nav-item dbt-treeview-node" role="presentation">
+										<a class="nav-link" href="SD0010.aspx">
+											<span class="text">주문서 접수</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link active"><span class="text">주문서 접수 현황</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="SD0030.aspx"><span class="text">주문서 접수 승인</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="SD0040.aspx"><span class="text">주문서 등록(매출)</span></a></li>
+								</ul>
+							</li>
+							<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-col m-0"></span><span class="text">입금 관리</span></a>
+								<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0 dx-hc">
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../TR/TR0010.aspx"><span class="text">금액분류 및 확인</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../TR/TR0020.aspx"><span class="text">입금 등록</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../TR/TR0030.aspx"><span class="text">입금 승인</span></a></li>
+								</ul>
+							</li>
+							<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" aria-expanded="false" href="javascript:;"><span aria-hidden="true" class="expand-btn dbt-icon dbt-icon-col m-0"></span><span class="text">마스터 관리</span></a>
+								<ul class="nav nav-pills flex-column dbt-treeview-nodes m-0 dx-hc">
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../AD/AD0010.aspx"><span class="text">거래처 관리</span></a></li>
+									<li class="nav-item dbt-treeview-node" role="presentation"><a class="nav-link" href="../AD/AD0020.aspx"><span class="text">담보 관리</span></a></li>
+								</ul>
+							</li>
+						</ul><span id="navTreeView_SEB" aria-hidden="true" class="expand-btn dx-hc dbt-icon dbt-icon-col m-0"></span><span id="navTreeView_SCB" aria-hidden="true" class="expand-btn dx-hc dbt-icon dbt-icon-ex m-0 active"></span>
+					</nav>
+				</div>
+			</div>
+			<div class="d-flex flex-fill flex-column dbt-content">
+
+
+				<div class="dbt-header-part dbt-area-highlight">
+
 					<div class="dxbs-toolbar-adaptive dbt-header-toolbar p-2 justify-content-end dxbs-loading dxbs-ta-nib" id="Header_HeaderToolbar">
 						<div class="btn-toolbar" role="toolbar">
 							<!--dxnp-->
 							<!--dxrc-->
-							<div class="btn-group" role="group">
-								<!--dxrc--><button class="ham_menu btn btn-outline-secondary" data-item="0_0" type="button"><span class="image fas fa-bars"></span>
-									<!--dxnp-->
-									<!--dxnp-->
-								</button>
+								<div class="btn-group" role="group">
+
 								<div class="btn-group" data-item="0_1">
-									<div class="no-icon dbt-header-user-info align-items-center border-0 text-dark mr-3 btn btn-outline-secondary dropdown-toggle">
-										<!--dxnp--><span class="image fas fa-user"></span>
-										<!--dxnp-->
-										<!--dxrb-->
-										<span>관리자</span>
-										<!--dxrb-->
-										<!--dxnp-->
+									<div class="no-icon dbt-header-user-info align-items-center border-0 text-dark btn btn-outline-secondary dropdown-toggle mr-3">
+										<span class="image fas fa-user"></span>
+										<span>박소연</span>
 									</div>
-									<!--dxnp-->
-									<!--dxnp-->
 								</div>
-								<div class="btn-group" data-item="0_2">
+								<div class="btn-group" data-item="0_1" >
 									<div class="no-icon dbt-header-user-info align-items-center border-0 text-dark btn btn-outline-secondary dropdown-toggle">
-										<!--dxnp--><span class="image fas fa-link"></span>
-										<!--dxnp-->
-										<!--dxrb-->
+										<span class="image fas fa-link"></span>
 										<span>LINK</span>
-										<!--dxrb-->
-										<!--dxnp-->
 									</div>
-									<!--dxnp-->
-									<!--dxnp-->
 								</div>
-								<!--dxrc-->
+
 							</div>
 							<!--dxrc-->
 							<div class="btn-group dxbs-ta-ag">
-								<button class="dxbs-ta-e btn btn-outline-secondary dxbs-hl" data-item="root_submenu" type="button"><span class="image dxbs-icon dxbs-icon-ellipsis"></span>
+								<button class="dxbs-ta-e btn btn-outline-secondary dxbs-hl" data-item="root_submenu" type="button">
+									<span class="image dxbs-icon dxbs-icon-ellipsis"></span>
 									<!--dxnp-->
 									<!--dxnp-->
 								</button>
@@ -604,8 +1120,8 @@
 																				value="2020-07-27" /><span></span>
 																		</div>
 																		<div class="input-group-append">
-																			<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window">
-																				<span aria-hidden="true" class="far fa-calendar-alt"></span></span>
+																			<span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+																					class="far fa-calendar-alt"></span></span>
 																			<div class="dxbs-dm dropdown-menu dxbs-dropdown-area" style="display:none;">
 																				<script id="dxss_243390196">
 																					<!--
@@ -4772,6 +5288,6 @@
 	</form>
 	<div class="dbt-toast-container"></div>
 
-	</body>
+</body>
 
-	</html>
+</html>

@@ -4,7 +4,7 @@
     display: none;
 }
 .dxbs-spacer::before
-{
+{dxbs-fl-ctrl
     content: ' ';
     display: inline-block;
     width: 1em;
