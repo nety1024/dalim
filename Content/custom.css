@@ -50,6 +50,8 @@ a:hover {color: #5096cd;}
 .modal-footer button{height:30px;font-size: 12px;}
 
 /* 그리드 폰트조절 */
+.f10{font-size: 10px;}
+.f12{font-size: 12px;}
 .f13{font-size: 13px;}
 .f14{font-size: 14px;}
 .bold{font-weight: bold;}
@@ -113,7 +115,9 @@ nav .dbt-icon:hover{color:#5096cd;}
 /* 아이콘 버튼 */
 .fas{font-size:12px;}
 .btn-secondary:hover {  color: #fff;  background-color: #5096cd;  border-color: #5096cd;}
-.btn {padding-left: 0.4rem; padding-right: 0.4rem;}
+.input-group .btn {padding-left: 0.4rem; padding-right: 0.4rem; width:30px;}
+
+
 
 /* 인풋박스 아이콘 위치 조절 */
 .input-group-append .dropdown-toggle::after {margin-left: 0em;border:0;}

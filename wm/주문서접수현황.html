@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html class="h-100 theme-light dbt-loading-process">
 <meta charset="utf-8" />
+
 <head>
 	<link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,23_138-eoual" />
 	<link rel="stylesheet" href="../Content/DXR.css" />
 	<meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
-	<title>	dalim	</title>
+	<title> dalim </title>
 	<link rel="shortcut icon" type="image/x-icon" href="../Content/images/favicon.png" />
 	<link rel="stylesheet" href="../Content/bootstrap.css" />
 	<link href="../Content/dbt-icons.css" rel="stylesheet" />
@@ -248,7 +249,7 @@
 					</div>
 					<a href="javascript:void(0)" onclick="reCallMainPage();" class="lnb_title">
 						<i class="fas fa-folder-open"></i>전체 카테고리</a>
-<!--- 스크롤바를 만들기 위한 section 구분 --->
+					<!--- 스크롤바를 만들기 위한 section 구분 --->
 					<section id="sidebar">
 						<script id="dxss_184150023">
 							<!--
@@ -384,7 +385,8 @@
 										<span class="text plusicon_text">시스템 관리</span></a>
 									<ul class="nav nav-pills flex-column dx-hc">
 										<li class="nav-item" role="presentation">
-											<a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/CodeMaster.aspx#CodeMaster#SYSGRP00&#39;)"><span class="text">공통코드</span></a></li>
+											<a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/CodeMaster.aspx#CodeMaster#SYSGRP00&#39;)"><span class="text">공통코드</span></a>
+										</li>
 										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/UserMaster.aspx#UserMaster#SYSGRP00&#39;)"><span class="text">사용자 등록</span></a></li>
 										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/MenuMaster.aspx#MenuMaster#SYSGRP00&#39;)"><span class="text">메뉴관리</span></a></li>
 										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;SystemManage/UserGroup.aspx#UserGroup#SYSGRP00&#39;)"><span class="text">권한그룹</span></a></li>
@@ -395,7 +397,7 @@
 								<li class="nav-item" role="presentation">
 									<a class="nav-link" aria-expanded="false" href="javascript:;">
 										<span aria-hidden="true" class="fa fa-minus minusicon"></span>
-									<span class="text plusicon_text">도매 관리</span></a>
+										<span class="text plusicon_text">도매 관리</span></a>
 									<ul class="nav nav-pills flex-column dx-hc">
 										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0010.aspx#WM0010#WMGRP00&#39;)"><span class="text">도매 주문 통제</span></a></li>
 										<li class="nav-item" role="presentation"><a class="nav-link" href="javascript:OnNodeClick(&#39;WM/WM0020.aspx#WM0020#WMGRP00&#39;)"><span class="text">도매 주문 요청</span></a></li>
@@ -1796,6 +1798,7 @@
 																<td colspan="12"></td>
 																<td class="dxgvAIC dxbs-nlb dxgRRB">&nbsp;</td>
 															</tr>
+<!--
 															<tr id="CallbackPanelBase_mainContent_grdFileList_DXEmptyRow" class="dxbs-empty-data-row">
 																<td colspan="12">
 																	<div>
@@ -1804,37 +1807,47 @@
 																</td>
 																<td class="dxgvAIC dxbs-nlb dxgRRB">&nbsp;</td>
 															</tr>
+
 															<tr id="CallbackPanelBase_mainContent_grdFileList_DXBatchChangesPreviewGroupRow0" class="dxbs-preview-group-row dxgvBEHI">
 																<td class="dxgRRB" colspan="12">Inserted values</td>
 																<td class="dxgvAIC dxbs-nlb dxgRRB">&nbsp;</td>
 															</tr>
+
 															<tr id="CallbackPanelBase_mainContent_grdFileList_DXBatchChangesPreviewGroupRow1" class="dxbs-preview-group-row dxgvBEHI">
 																<td class="dxgRRB" colspan="12">Updated values</td>
 																<td class="dxgvAIC dxbs-nlb dxgRRB">&nbsp;</td>
 															</tr>
+
 															<tr id="CallbackPanelBase_mainContent_grdFileList_DXBatchChangesPreviewGroupRow2" class="dxbs-preview-group-row dxgvBEHI">
 																<td class="dxgRRB" colspan="12">Deleted values</td>
 																<td class="dxgvAIC dxbs-nlb dxgRRB">&nbsp;</td>
 															</tr>
-															<tr id="CallbackPanelBase_mainContent_grdFileList_DXDataRowdxgbeEtalonRecord" class="text-nowrap" style="display:none;">
-																<td class="dxbs-cmd-cell"><button class="btn btn-link dxbs-button" data-toggle="gridview-datarow-delete" type="button">Delete</button></td>
-																<td>&nbsp;</td>
-																<td id="CallbackPanelBase_mainContent_grdFileList_tccelldxgbeEtalonRecord_2">
-																	<a href='' download=''></a>
+-->
+															<tr id="CallbackPanelBase_mainContent_grdFileList_DXDataRow0" class="text-nowrap dxbs-first-data-row dxgvLVR" style="">
+																<td class="dxbs-cmd-cell" tabindex="0">
+																	<button class="btn btn-link dxbs-button" data-toggle="gridview-datarow-delete" type="button">
+																		<span class="far fa-trash-alt" aria-hidden="true"></span>
+																	</button>
 																</td>
-																<td class="text-right">&nbsp;</td>
-																<td>&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none">&nbsp;</td>
-																<td class="d-none dxgRRB">&nbsp;</td>
+																<td class="text-right" tabindex="0">1</td>
+																<td id="CallbackPanelBase_mainContent_grdFileList_tccell0_2" tabindex="0">
+																	<a href="" download="20200404_하이패스.pdf">20200404_하이패스</a>
+																</td>
+																<td class="text-right" tabindex="0">40,078</td>
+																<td tabindex="0">pdf</td>
+																<td class="d-none" tabindex="0">RCL-36025_0904100248916.pdf</td>
+																<td class="d-none" tabindex="0">RCL-36025_0904100248916</td>
+																<td class="d-none" tabindex="0">../UploadDirectoryS_ORDER_RECEIVE_LIST/2020/09RCL-36025_0904100248916.pdf</td>
+																<td class="d-none" tabindex="0">S_ORDER_RECEIVE_LIST/2020/09</td>
+																<td class="d-none" tabindex="0">DAT-123685</td>
+																<td class="d-none" tabindex="0">ftp://dalimf:dalim_0622@222.110.75.206:97/S_ORDER_RECEIVE_LIST/2020/09/RCL-36025_0904100248916.pdf</td>
+																<td class="d-none" tabindex="0">20200404_하이패스.pdf</td>
+																<td class="d-none dxgRRB" tabindex="0">N</td>
 																<td class="dxgvAIC dxbs-nlb"><button title="..." class="dxgvADSB btn btn-link dxbs-button icon-only" data-toggle="gridview-datarow-showadaptivedetails" type="button"><span aria-hidden="true"
-																			class="image dxbs-icon dxbs-icon-ellipsis"></span></button><button title="X" class="dxgvADHB btn btn-link dxbs-button icon-only" data-toggle="gridview-datarow-hideadaptivedetails" type="button"><span
-																			aria-hidden="true" class="image dxbs-icon dxbs-icon-remove"></span></button></td>
+																			class="image dxbs-icon dxbs-icon-ellipsis" role="presentation"></span></button><button title="X" class="dxgvADHB btn btn-link dxbs-button icon-only" data-toggle="gridview-datarow-hideadaptivedetails"
+																		type="button"><span aria-hidden="true" class="image dxbs-icon dxbs-icon-remove" role="presentation"></span></button></td>
 															</tr>
+
 														</tbody>
 													</table>
 													<div id="CallbackPanelBase_mainContent_grdFileList_DXBEsC" class="d-none dxBEC">
@@ -4772,6 +4785,6 @@
 	</form>
 	<div class="dbt-toast-container"></div>
 
-	</body>
+</body>
 
-	</html>
+</html>
