@@ -1,0 +1,108 @@
+html, body, header, footer, nav, table, tr, th, td {font-size:12px;}
+
+/* 다림칼라 */
+.bg_darimblue{background-color:#5096cd !important;}
+.bg_darimlgray{background-color:#beb9b9 !important;}
+.bg_darimdgray{background-color:#6E6E6E !important;}
+.bg_background{background-color: #f1f1f1;}
+
+/* 로고 이미지 영역 */
+.logo_img{display: block;background: url("./Images/logo.png") 0 0 no-repeat;width:200px;height:23px;margin-top:14px;}
+.skin-blue .main-header .logo { background-color: #fff; color: #000; border-bottom: 0 solid transparent; }
+.skin-blue .main-header .logo:hover {  background-color: #fff; }
+
+/* 탑 영역 */
+.skin-blue .main-header .navbar { background-color: #fff;}
+.skin-blue .main-header .navbar .sidebar-toggle { color: #000;}
+.skin-blue .main-header .navbar .nav>li>a { color:#000;}
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar
+.nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus,
+.skin-blue .main-header .navbar .nav .open>a, .skin-blue .main-header .navbar .nav .open>a:hover, .skin-blue .main-header .navbar .nav .open>a:focus, .skin-blue .main-header .navbar .nav>.active>a {
+background: rgba(0,0,0,0.1);color: #000;}
+.skin-blue .main-header .navbar .sidebar-toggle:hover {  background-color: #fff; color:#000; }
+.content-tabs .page-tabs a.active { background: #5096cd; color: #fff; border:none;}
+.shadow {box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;}
+.content-header > h1 > small { font-size: 14px; }
+
+/* 햄버거 메뉴 */
+.skin-blue .main-header .navbar {background: #fff; height:40px; }
+.skin-blue .main-header .navbar .sidebar-toggle { padding: 10px; color: #000; font-size:22px;}
+.skin-blue .main-header .navbar .sidebar-toggle:hover { padding: 10px; background:#eee;  color:#000; }
+
+/* 관리자 드롭다운 */
+.navbar-nav>li>a { margin:0; padding: 20px 5px 10px 5px; font-size:13px;}
+.navbar-nav>li>a span.fa-user, .navbar-nav>li>a span.fa-link{color: #5096cd;}
+.navbar-nav>li>a span.fa-caret-down{margin-left:3px;font-size:14px;}
+.navbar-nav > .user-menu > .dropdown-menu {  width: 100px;}
+.navbar-nav > .user-menu > .dropdown-menu > .user-footer>div>a {padding:5px; color: #333;display:block;}
+
+.skin-blue .main-header .navbar .nav>li>a { color:#000;}
+.skin-blue .main-header .navbar .nav>li>a:hover, .skin-blue .main-header .navbar
+.nav>li>a:active, .skin-blue .main-header .navbar .nav>li>a:focus,
+.skin-blue .main-header .navbar .nav .open>a,
+.skin-blue .main-header .navbar .nav .open>a:hover,
+.skin-blue .main-header .navbar .nav>.active>a {
+background: rgba(0,0,0,0.1); color: #000;}
+
+/* 컨텐츠 탭 */
+.content-tabs { border-bottom: solid 1px #ddd; line-height:40px;}
+
+/* 컨텐츠 헤더 */
+/* .content-header {display:flex; padding-top:0; } */
+/* .content-header h1 {display:inline-block; flex:none; display: flex; align-items: center;} */
+.content-header h1 small {font-size:12px; }
+/* .content-header > .breadcrumb { background: none; margin-top:5px; position: relative; top:0; right:0;  float:none; text-align: right; margin-left:auto;} */
+@media (max-width: 768px) {
+/* .content-header {display:block; padding-top:15px;} */
+}
+
+
+/* left 내비게이션 */
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side { background-color: #fff;}
+.skin-blue .sidebar-form {  border-radius: 3px;  border: 1px solid #ccc;  margin: 10px 10px}
+.skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {  box-shadow: none;    background-color: #fff;    border: 1px solid transparent;   height: 35px;}
+.skin-blue .sidebar a {color: #000; font-size:14px;}
+.skin-blue .treeview-menu>li>a {  color: #666; font-size:14px;}
+.skin-blue .sidebar-menu>li>a i {color: #5096cd;}
+.skin-blue .sidebar-menu>li:hover>a { background: #ebebeb; }
+.skin-blue .sidebar-menu>li.active>a {  color: #fff;   background: #5096cd; border-left-color:#fff;}
+.skin-blue .sidebar-menu>li.active>a i {color: #fff;}
+
+/* 본문 */
+.dx-texteditor-container {height:auto;}
+.breadcrumb button {background: #245b86; color:#fff; font-size:12px;}
+.breadcrumb button:hover {background: #000; color:#fff;}
+.box { border-radius: 0;}
+.dx-pager .dx-page-sizes .dx-selection, .dx-pager .dx-pages .dx-selection {color: #fff;background-color: #5096cd;}
+.box-header > .fa,.box-header > .glyphicon,.box-header > .ion,.box-header .box-title { font-size: 14px; font-weight:bold;}
+.info-box-number {  font-size: 24px; }
+.info-box-content {  padding: 5px 10px; margin-left: 90px;}
+
+/* 박스마다 상단에 들어가는 줄  없애기 */
+/* .box.box-info, .box.box-primary, .box.box-success { border-top: 1px solid  #5096cd; border-top:0;} */
+.box.box-info, .box.box-primary, .box.box-success { border:0;}
+.info-box, .box {border: 0; box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); }
+
+/* 로그인 화면 */
+.login-box {margin-top:0;}
+.login-logo {padding-top:40px;}
+.login-logo .dalim_logo {display:block; background: url("./images/logo.png") 50% 0 no-repeat; width:100%;height:30px;}
+.login-logo .logo_text {display:block;font-size:14px; color:#5096cd;}
+.login-box-bg {background: url("./images/bg/GettyImages-1145892681.jpg") 0 0 no-repeat;
+background-position: center center;	background-size: cover;display:flex; align-items: center; }
+.login-box-bg {background: #5096cd;display:flex; align-items: center; }
+.login-box-frame {background:#fff;height:420px;box-shadow:3px 3px 5px black;}
+.login-box-body {background: #fff;}
+.btn-login {background:#5096cd; }
+.btn-login:hover {background:#2c6b9d; }
+
+/* 사이즈 간격 조정 */
+@media (max-width: 991px) {
+.content-header > .breadcrumb li{margin-bottom:5px;}
+}
+
+
+
+@media (min-width: 768px) {
+
+}

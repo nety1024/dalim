@@ -1,0 +1,2132 @@
+<html class="bg_gray dxChrome dxWindowsPlatform dxWebKitFamily dxBrowserVersion-85 dxbs-4">
+
+<head>
+  <link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,1_74,1_75,1_68,1_69,1_70,1_73-eoual">
+  <link rel="stylesheet" href="../Content/DXR.css" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+  <title>
+
+  </title>
+  <link rel="stylesheet" href="../Content/bootstrap.css">
+  <link href="../Content/dbt-icons.css" rel="stylesheet">
+  <link href="../Content/common.css" rel="stylesheet">
+  <link href="../Content/fontawesome.css" rel="stylesheet">
+  <link href="../Content/custom.css" rel="stylesheet">
+
+  <script type="text/javascript" src="../Content/common_dbt.js" defer=""></script>
+  <script type="text/javascript" src="../Content/jquery-3.5.1.min.js"></script>
+  <script type="text/javascript">
+    /**********************************************************************************************************************
+     * 사용자 id 세션정보 가져오기
+     ***********************************************************************************************************************/
+
+
+    function hidLoginInfo_onInit(s, e) {
+      var strJsonData = window.sessionStorage.getItem("DERPLoginInfo");
+      //var strLoginInfo = new Object();
+      //strLoginInfo = JSON.parse(strJsonData);
+
+      if (strJsonData != "" && strJsonData != null && strJsonData != undefined) {
+        fnSetCTRLVal(s, strJsonData);
+      }
+    }
+
+    function MenuButton_Click(s, e) {
+
+      // 검색
+      if (window['MainSearch'] != undefined && s == MainSearch) {
+
+        if (typeof pageSearchButton_Click === "function") {
+          e.processOnServer = pageSearchButton_Click();
+        }
+      }
+      // 신규
+      else if (window['MainNew'] != undefined && s == MainNew) {
+        if (typeof pageNewButton_Click === "function") {
+          e.processOnServer = pageNewButton_Click();
+        }
+      }
+      // 저장
+      else if (window['MainSave'] != undefined && s == MainSave) {
+
+        if (typeof pageSaveButton_Click === "function") {
+          e.processOnServer = pageSaveButton_Click();
+        }
+
+      }
+      // 삭제
+      else if (window['MainDelete'] != undefined && s == MainDelete) {
+        if (typeof pageDelButton_Click === "function") {
+          e.processOnServer = pageDelButton_Click();
+        }
+
+      }
+      // 취소
+      else if (window['MainCancel'] != undefined && s == MainCancel) {
+        if (typeof pageCancelButton_Click === "function") {
+          e.processOnServer = pageCancelButton_Click();
+        }
+
+      }
+      // 인쇄
+      else if (window['MainPrint'] != undefined && s == MainPrint) {
+        if (typeof pagePrintButton_Click === "function") {
+          pagePrintButton_Click();
+        }
+      }
+
+      if (e.processOnServer && !(window['MainExcelExport'] != undefined && s == MainExcelExport)) {
+        LoadingPanel.Show();
+      }
+
+    }
+
+    //textarea 외에 엔터키 방지
+    function captureReturnKey(e) {
+      if (e.keyCode == 13 || e.keyCode == 8) {
+
+        if (e.target.nodeName != "INPUT" && e.target.nodeName != "TEXTAREA") return false;
+      }
+
+    }
+  </script>
+  <script>
+    //<![CDATA[
+    var _ServerUrl = "http://sm.dalimpharm.co.kr:80/";
+    //]]>
+  </script>
+  <script type="text/javascript">
+    //<![CDATA[
+
+    var strAjaxUrl = "/CM/CM_Ajax.aspx";
+
+    function pageSearchButton_Click() {
+      return true;
+    }
+
+    function pageNewButton_Click() {
+      return false;
+    }
+
+    function pageSaveButton_Click() {
+
+      var numSelCnt = grd1.GetSelectedRowCount();
+
+      if (numSelCnt == 0) {
+        COMMON_MSGBOX("!", "선택된 내역이 없습니다.");
+        return false;
+      }
+      v_ButtonFlag = "Approval";
+      grd1.GetSelectedFieldValues("ROW_ID;ORDER_UID;ORDER_DT;TAX_DT;ACCNT_ID;ACCNT_SUB_ID;ORDER_TYPE_CD;ORDER_ACCNT_TYPE_CD;COMMIT_FLG", grd1_OnCloseGetSelectedValeus)
+
+      return false;
+    }
+
+    function pageDelButton_Click() {
+      return false;
+    }
+
+    function pageCancelButton_Click() {
+
+      var numSelCnt = grd1.GetSelectedRowCount();
+
+      if (numSelCnt == 0) {
+        COMMON_MSGBOX("!", "선택된 내역이 없습니다.");
+        return false;
+      }
+      v_ButtonFlag = "Cancel";
+      grd2.GetSelectedFieldValues("ROW_ID;ORDER_UID;ORDER_DT;TAX_DT;ACCNT_ID;ACCNT_SUB_ID;ORDER_TYPE_CD;ORDER_ACCNT_TYPE_CD;COMMIT_FLG", grd1_OnCancelGetSelectedValeus)
+
+      return false;
+    }
+
+    /*------------------ 승인처리 시작 -----------------------*/
+    function grd1_OnCloseGetSelectedValeus(values) {
+      var strQRYTP = "";
+      var strMsg = "";
+      var numCheckCnt = 0;
+
+      var grd_Array = [];
+      var numWMCnt = 0;
+
+      var obj = new Object();
+
+      strQRYTP = "WJS_PKG_SD0080.UPD_APPR";
+      strMsg = "마감되었습니다.";
+      strCMsg = "선택하신 주문[" + values.length.toString() + "건]을  마감작업을 하시겠습니까 ? ";
+
+      obj.QRYTP = strQRYTP;
+      obj.FLAG = "Approval";
+
+      for (var numArrRow = 0; numArrRow < values.length; numArrRow++) {
+
+        if (values[numArrRow][8].toString() == "Y") {
+          numCheckCnt++;
+        }
+
+        grd_Array.push({
+          ROW_ID: values[numArrRow][0],
+          ORDER_UID: values[numArrRow][1],
+          ORDER_DT: values[numArrRow][2],
+          TAX_DT: values[numArrRow][3],
+          ACCNT_ID: values[numArrRow][4],
+          ACCNT_SUB_ID: values[numArrRow][5],
+          ORDER_TYPE_CD: values[numArrRow][6],
+          ORDER_ACCNT_TYPE_CD: values[numArrRow][7]
+        });
+      }
+
+      if (numCheckCnt > 0) {
+        COMMON_MSGBOX("!", "이미 마감된 내역이 있습니다.");
+        return;
+      }
+
+      obj.D_LIST = grd_Array;
+
+      // 오브젝트를 JSON형식으로 변환
+      var objData = JSON.stringify(obj);
+
+      var onCallOkFn = function() {
+        GoSaveData(strMsg, objData);
+      }
+      COMMON_MSGBOX_AF("?", strCMsg, onCallOkFn);
+
+      return;
+
+    }
+
+    /*------------------ 승인취소처리 시작 -----------------------*/
+    function grd1_OnCancelGetSelectedValeus(values) {
+      var strQRYTP = "";
+      var strMsg = "";
+      var numCheckCnt = 0;
+
+      var grd_Array = [];
+      var numWMCnt = 0;
+
+      var obj = new Object();
+
+      strQRYTP = "WJS_PKG_SD0080.UPD_CANCEL";
+      strMsg = "마감취소되었습니다.";
+      strCMsg = "선택하신 주문[" + values.length.toString() + "건]을  취소(마감) 하시겠습니까 ? ";
+
+      obj.QRYTP = strQRYTP;
+      obj.FLAG = "Cancel";
+
+      for (var numArrRow = 0; numArrRow < values.length; numArrRow++) {
+
+        if (values[numArrRow][8].toString() == "N") {
+          numCheckCnt++;
+        }
+        grd_Array.push({
+          ROW_ID: values[numArrRow][0],
+          ORDER_UID: values[numArrRow][1],
+          ORDER_DT: values[numArrRow][2],
+          TAX_DT: values[numArrRow][3],
+          ACCNT_ID: values[numArrRow][4],
+          ACCNT_SUB_ID: values[numArrRow][5],
+          ORDER_TYPE_CD: values[numArrRow][6],
+          ORDER_ACCNT_TYPE_CD: values[numArrRow][7]
+        });
+      }
+
+      if (numCheckCnt > 0) {
+        COMMON_MSGBOX("!", "마감처리가 되지 않은건은 취소할 수 없습니다.");
+        return;
+      }
+
+      obj.D_LIST = grd_Array;
+
+      // 오브젝트를 JSON형식으로 변환
+      var objData = JSON.stringify(obj);
+
+      var onCallOkFn = function() {
+        GoSaveData(strMsg, objData);
+      }
+      COMMON_MSGBOX_AF("?", strCMsg, onCallOkFn);
+
+      return;
+
+    }
+
+    //저장OK 처리 데이터
+    function GoSaveData(strSMsg, objData) {
+
+      //데이터 저장
+      var result = fnJQueryRetStr("SD_Ajax.aspx", "SD0080_Save", objData);
+
+      if (result.SuccessMessage == "S") {
+        var onSCallFn = function() {
+          btnLoad1.DoClick();
+        }
+        COMMON_MSGBOX_AF("!", strSMsg, onSCallFn)
+      }
+
+    }
+
+    // 구분(승인) 선택
+    function rdoListAppr_SelectedIndexChanged(s, e) {
+
+      MainSearch.DoClick();
+    }
+
+
+
+    // 승인내역 리스트 선택
+    function cboAPPRLIST_OnSelectedIndexChanged(s, e) {
+
+      btnLoad1.DoClick();
+    }
+
+
+
+    //]]>
+  </script>
+  <style></style>
+</head>
+
+<body class="h-100 w-100 bg_gray">
+  <form method="post" action="./SD0080.aspx?MENUID=SD0080&amp;USERIDadmin&amp;COMCD=ORG-39&amp;DBTYPE=CRM_L" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'hidDftBtn')" id="form1" onkeydown="return captureReturnKey(event)">
+    <div class="aspNetHidden">
+      <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+      <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+      <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
+        value="">
+    </div>
+
+    <script type="text/javascript">
+      //<![CDATA[
+      var theForm = document.forms['form1'];
+      if (!theForm) {
+        theForm = document.form1;
+      }
+
+      function __doPostBack(eventTarget, eventArgument) {
+        if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+          theForm.__EVENTTARGET.value = eventTarget;
+          theForm.__EVENTARGUMENT.value = eventArgument;
+          theForm.submit();
+        }
+      }
+      //]]>
+    </script>
+
+
+    <script src="/WebResource.axd?d=pynGkmcFUV13He1Qd6_TZL8brbRH6PU3OF4j7YF1snQkxhtSd-ik02YwIOTkm04giCKpkemqsMs_tZ_Wr3OCSQ2&amp;t=637034445464690003" type="text/javascript"></script>
+
+
+    <script src="/ScriptResource.axd?d=B_UHbsmfULLw-9ih4t4bweV_-_qiPPord0VTdA_utFeiPDNrXFt-MW892eMpfL4O8jbMdTjvRW7cVaP445J3cfeDUi03Edt8z6E3gRGpP3QJAmb0O4dvwOUzOEPFc8B-smiPd2e0YPwGeKhbY7naHLte1h6Nq-gTO4tTJkAV5341&amp;t=ffffffffa580202a"
+      type="text/javascript"></script>
+    <script src="/ScriptResource.axd?d=aLbq1MoAvui0PhKS8ZfaOn7G4BVSc7frBVpeK0pfjKbyynnGkuJUgyAMefoRMdXRtmYUyll05xLyXesod79KCnoJe8b6pxGT06Y-cDDiHm8mX4PtOprCw9780YiFcgdUdemp9GVnmFMab5PGeYkqKA25lTu1RPZ3ftIM56QlBWg1&amp;t=ffffffffa580202a"
+      type="text/javascript"></script>
+    <script src="/WebResource.axd?d=JoBkLzP19aTuxbWOhHobYkI1nL4OAfoTu0-mnOwdkH-jnU9BSAv_b_IB0LQWA4ZMhent5RVKAHWXAR4I-4DxAw2&amp;t=637034445464690003" type="text/javascript"></script>
+    <div class="aspNetHidden">
+
+      <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="EE6701C7">
+      <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
+        value="aQvudp/55ofkDCEBYGAukyW+vr2ljrIfJX8Y9j/CzGSAc3JItijIWBFHphcOnmSPv2QfJghRDf9PEjSwhqJ/tY1bUU88KUIENKqtuGHUuO9CuXQ9EOTc+VFLgZm6NiMuv3smz+mn25BQCQxynkstEAHhOzVLQWomQLCGnlIyM/gU4Gvt9PgaBGakWN2EApZYCEQ5wxD6qI6zRRuhI3ErL+MK3f01/pl6Bi14f5SvvdQE1QukzFROdPLLiD0i8jMI8jQ2Ngp0UHo2/FrPS0/3cJCG446Q037teWyC89/u9/1vmNK47KCIQDcSBAVdeTV7DF0cnAlv+H+L8ZJ4k3NZRtcOVY0UT3UkwptpkTdV1y4=">
+    </div>
+    <script type="text/javascript">
+      //<![CDATA[
+      Sys.WebForms.PageRequestManager._initialize('ctl00$ScriptManager1', 'form1', ['tctl00$CallbackPanelBase$UpdatePanel', 'CallbackPanelBase_UpdatePanel'], [], ['ctl00$CallbackPanelBase$MainExcelExport', 'CallbackPanelBase_MainExcelExport'], 90,
+        'ctl00');
+      //]]>
+    </script>
+
+    <div class="container-fluid">
+      <script id="dxss_184150023" data-executed="true">
+        <!--
+        var ASPx, dx, DevExpress;
+        ! function n(t, o, e, r, i, a, c) {
+          var u = [],
+            l = [],
+            d = 0,
+            f = [],
+            s = [],
+            h = !1;
+
+          function C(n, r, i) {
+            n[i] = function() {
+              r(t, o, e)
+            }
+          }
+
+          function v() {
+            return r == d
+          }
+
+          function m() {
+            return !0
+          }
+
+          function E(n) {
+            return function() {
+              throw new Error(n)
+            }
+          }
+
+          function x(n) {
+            n()
+          }
+          var S = -1;
+
+          function b(n, t, o, e) {
+            var r = ++S;
+            return function() {
+              i(function() {
+                r == S && o() && (S--, function(n) {
+                  for (var t = n.length, o = 0, e = null;
+                    (e = n[o]) && o < t; o++) e && e();
+                  n.length = 0
+                }(t), e())
+              })
+            }
+          }
+          var p = b(0, f, function() {
+              return h && v()
+            }, function() {
+              t.attachToReady = x
+            }),
+            T = b(0, s, m, function() {
+              t.attachToLoad = x, p()
+            }),
+            w = b(0, l, m, function() {
+              t.SS = function(n) {
+                n(t, o, e)
+              }, T()
+            }),
+            A = b(0, u, v, function() {
+              t.IS = E("Too late"), w()
+            }),
+            y = 0;
+          t.SS = function(n) {
+            var t = y++;
+            i(function() {
+              C(l, n, t)
+            })
+          };
+          var P = 0;
+          t.IS = function(n, t) {
+            i(function() {
+              for (C(u, n, t), d++; P < d && u[P];) u[P] = u[P]() && null, P++;
+              A()
+            })
+          }, t.attachToReady = f.push.bind(f), t.attachToLoad = s.push.bind(s), t.initResourceLoader = n, c.addEventListener("DOMContentLoaded", function() {
+            r = c.querySelectorAll("script[id^=dxis_][defer]").length, A()
+          }), a.addEventListener("load", function() {
+            h = !0, p()
+          });
+          var L = ["BeginCallback", "BrowserWindowResized", "CallbackError", "ControlsInitialized", "EndCallback", "ValidationCompleted"],
+            B = ["ForEachControl", "Get", "GetByName", "GetControlsByPredicate", "GetControlsByType"],
+            G = [];
+          var g = L.reduce(function(n, t) {
+            return ((n[t] = {}).AddHandler = function(n) {
+              G.push({
+                e: t,
+                h: n
+              })
+            }) && n
+          }, {});
+          g = B.reduce(function(n, t) {
+            return (n[t] = E("The environment has not been initialized. To access the " + t + " member, call the member from the ControlsInitialized event's handler.")) && n
+          }, g), t.loadControlCollectionPreloadHandlers = function(n) {
+            G.forEach(function(t) {
+              n[t.e].AddHandler(t.h)
+            }), L.forEach(function(t) {
+              g[t] = n[t]
+            }), B.forEach(function(t) {
+              g[t] = n[t].bind(n)
+            }), t.loadControlCollectionPreloadHandlers = G = g = null
+          }, a.ASPxClientControl = {
+            GetControlCollection: function() {
+              return g
+            }
+          }
+        }(ASPx || (ASPx = {}), dx || (dx = {}), DevExpress || (DevExpress = {}), -1, window.requestAnimationFrame || setTimeout, window, document);
+
+        //
+        -->
+      </script>
+      <script id="dxis_1114114121" src="/DXR.axd?r=1_11-boual"></script>
+      <script id="dxis_1019809068" src="/DXR.axd?r=1_252,1_12,1_23-boual&amp;order=0" defer=""></script>
+      <script id="dxis_346246450" src="/DXR.axd?r=1_64-boual"></script>
+      <script id="dxis_919467545"
+        src="/DXR.axd?r=1_13,1_14,1_15,1_182,23_0,23_1,23_31,1_60,23_32,1_183,1_184,1_185,1_21,1_22,1_190,1_192,1_17,23_39,1_194,23_38,23_30,1_186,23_37,1_193,23_35,1_19,1_213,1_224,1_225,1_211,1_227,1_236,1_238,1_239,1_230,1_234,1_240,23_11,23_12,23_18,1_49,1_41,23_8-eoual&amp;order=1"
+        defer=""></script>
+      <div id="CallbackPanelBase">
+
+        <dx:panelcontent>
+          <div id="CallbackPanelBase_UpdatePanel">
+
+            <div class="row  justify-content-between page_title_bar">
+              <div class="dbt-pcontent-title ml-1 float-left">
+                <span id="CallbackPanelBase_lblTitle">주문서 등록 마감</span>
+              </div>
+              <div id="CallbackPanelBase_divBtn" class="form-inline mt-2 ml-5">
+                <div id="CallbackPanelBase_divSearch" class="form-group mr-1 mb-1">
+                  <script id="dxss_697210726" data-executed="true">
+                    <!--
+                    ASPx.SS(function(ASPx, dx) {
+                      ASPx.AccessibilitySR.DefaultCallbackMessage = 'Callback in process.';
+
+                    });
+                    //
+                    -->
+                  </script><button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainSearch" type="submit" name="ctl00$CallbackPanelBase$MainSearch" value="조회"><span aria-hidden="true" class="image fas fa-search mr5"></span>조회</button>
+                </div>
+                <div id="CallbackPanelBase_divNew" class="form-group mr-1 mb-1 d-none">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainNew" type="submit" name="ctl00$CallbackPanelBase$MainNew" value="신규"><span aria-hidden="true" class="image fas fa-pen mr5"></span>신규</button>
+                </div>
+                <div id="CallbackPanelBase_divSave" class="form-group mr-1 mb-1">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainSave" type="submit" name="ctl00$CallbackPanelBase$MainSave" value="마감"><span aria-hidden="true" class="image fas fa-save mr5"></span>마감</button>
+                </div>
+                <div id="CallbackPanelBase_divDelete" class="form-group mr-1 mb-1 d-none">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainDelete" type="submit" name="ctl00$CallbackPanelBase$MainDelete" value="삭제"><span aria-hidden="true" class="image fas fa-trash-alt mr5"></span>삭제</button>
+                </div>
+                <div id="CallbackPanelBase_divCancel" class="form-group mr-1 mb-1">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainCancel" type="submit" name="ctl00$CallbackPanelBase$MainCancel" value="마감취소"><span aria-hidden="true" class="image fas fa-undo mr5"></span>마감취소</button>
+                </div>
+                <div id="CallbackPanelBase_divExcel" class="form-group mr-1 mb-1">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainExcelExport" type="submit" name="ctl00$CallbackPanelBase$MainExcelExport" value="엑셀"><span aria-hidden="true"
+                      class="image fas fa-file-excel mr5"></span>엑셀</button>
+                </div>
+
+                <div id="CallbackPanelBase_divPrint" class="form-group mr-1 mb-1 d-none">
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_MainPrint" type="submit" name="ctl00$CallbackPanelBase$MainPrint" value="인쇄" style="width:70px;"><span aria-hidden="true"
+                      class="image fas fa-print"></span>인쇄</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-1">
+              <div class="col-12">
+                <div class="dxbs-fl form-horizontal" id="CallbackPanelBase_mainContent_SD0080_FormLayout1">
+                  <div class="row">
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_0" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_I">주문일자</label>
+                        <div class="dxbs-fl-ctrl form-group">
+
+                          <script id="dxss_263987368" data-executed="true">
+                            <!--
+                            ASPx.SS(function(ASPx, dx) {
+                              (function() {
+                                var a = {
+                                  'currency': '₩',
+                                  'shortDate': 'yyyy-MM-dd',
+                                  'abbrMonthNames': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', ''],
+                                  'numNegInf': '-∞',
+                                  'am': '오전',
+                                  'currPrec': 0,
+                                  'longDate': 'yyyy\'년\' M\'월\' d\'일\' dddd',
+                                  'genMonthNames': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', ''],
+                                  'numPosInf': '∞',
+                                  'abbrDayNames': ['일', '월', '화', '수', '목', '금', '토'],
+                                  'currNegPattern': 1,
+                                  'monthNames': ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', ''],
+                                  'monthDay': 'M월 d일',
+                                  'yearMonth': 'yyyy\'년\' M\'월\'',
+                                  'pm': '오후',
+                                  'longTime': 'tt h:mm:ss',
+                                  'ds': '-',
+                                  'shortTime': 'tt h:mm',
+                                  'percentPattern': 1,
+                                  'dayNames': ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+                                };
+                                for (var b in a) ASPx.CultureInfo[b] = a[b];
+                              })();
+
+
+                            });
+                            //
+                            -->
+                          </script>
+                          <div class="dxbs-dropdown-edit dxbs-date-edit" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT" style="width:100%;">
+                            <div class="input-group">
+                              <div class="dxbs-input-cntr">
+                                <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_I" class="form-control input_redcheck" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtSTARTDT" value="2020-10-06"
+                                  autocomplete="off"><span></span>
+                              </div>
+                              <div class="input-group-append">
+                                <span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                    class="far fa-calendar-alt"></span></span>
+                                <div class="dxbs-dm dropdown-menu dxbs-dropdown-area">
+                                  <script id="dxss_243390196" data-executed="true">
+                                    <!--
+                                    ASPx.SS(function(ASPx, dx) {
+                                      ASPx.AccessibilitySR.AddStringResources({
+                                        'BlankEditorText': 'blank',
+                                        'CalendarMultiSelectText': 'Selected dates are: ',
+                                        'CalendarRangeFormatString': 'from {0} to {1}',
+                                        'CalendarDescription': 'Calendar. Use arrow keys to navigate.'
+                                      });
+
+
+                                    });
+                                    //
+                                    -->
+                                  </script>
+                                  <div class="dxbs-calendar" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C" data-observed="true">
+                                    <div class="calendar-row">
+                                      <div class="calendar-view card">
+                                        <div class="card-header btn-group">
+                                          <span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_PYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-backward"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_PTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_PMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_TC" class="dxbs-month-title btn btn-secondary" role="button" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">2020년
+                                            10월</span><span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_NMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_NTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_NYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-forward"></span></span>
+                                        </div>
+                                        <div class="card-body">
+                                          <table class="dxbs-month-table table table-sm table-bordered">
+                                            <tbody>
+                                              <tr class="text-center">
+                                                <td></td>
+                                                <th class="dxbs-calendar-dow">일</th>
+                                                <th class="dxbs-calendar-dow">월</th>
+                                                <th class="dxbs-calendar-dow">화</th>
+                                                <th class="dxbs-calendar-dow">수</th>
+                                                <th class="dxbs-calendar-dow">목</th>
+                                                <th class="dxbs-calendar-dow">금</th>
+                                                <th class="dxbs-calendar-dow">토</th>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    40
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>27</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>28</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>29</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>30</a></td>
+                                                <td class="dxbs-day"><a>1</a></td>
+                                                <td class="dxbs-day"><a>2</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>3</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    41
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>4</a></td>
+                                                <td class="dxbs-day"><a>5</a></td>
+                                                <td class="dxbs-day table-active" style=""><a>6</a></td>
+                                                <td class="dxbs-day dxbs-today dx-accent-color"><a>7</a></td>
+                                                <td class="dxbs-day"><a>8</a></td>
+                                                <td class="dxbs-day"><a>9</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>10</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    42
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>11</a></td>
+                                                <td class="dxbs-day"><a>12</a></td>
+                                                <td class="dxbs-day"><a>13</a></td>
+                                                <td class="dxbs-day"><a>14</a></td>
+                                                <td class="dxbs-day"><a>15</a></td>
+                                                <td class="dxbs-day"><a>16</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>17</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    43
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>18</a></td>
+                                                <td class="dxbs-day"><a>19</a></td>
+                                                <td class="dxbs-day"><a>20</a></td>
+                                                <td class="dxbs-day"><a>21</a></td>
+                                                <td class="dxbs-day"><a>22</a></td>
+                                                <td class="dxbs-day"><a>23</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>24</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    44
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>25</a></td>
+                                                <td class="dxbs-day"><a>26</a></td>
+                                                <td class="dxbs-day"><a>27</a></td>
+                                                <td class="dxbs-day"><a>28</a></td>
+                                                <td class="dxbs-day"><a>29</a></td>
+                                                <td class="dxbs-day"><a>30</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>31</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    45
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>1</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>2</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>3</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>4</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>5</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>6</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>7</a></td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                        <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_yc" class="d-none">
+                                          <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_yt" class="dxbs-fast-nav">
+                                            <div class="card-body">
+                                              <table id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_yt_n" class="table table-sm table-bordered">
+                                                <tbody>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="btn-toolbar card-footer">
+                                      <span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_BT" class="btn btn-secondary">Today</span><span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C_BC"
+                                        class="btn btn-secondary">Clear</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          &nbsp;
+                          <div class="dxbs-dropdown-edit dxbs-date-edit" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT" style="width:100%;">
+                            <div class="input-group">
+                              <div class="dxbs-input-cntr">
+                                <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_I" class="form-control input_redcheck" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtENDDT" value="2020-10-07"
+                                  autocomplete="off"><span></span>
+                              </div>
+                              <div class="input-group-append">
+                                <span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                    class="far fa-calendar-alt"></span></span>
+                                <div class="dxbs-dm dropdown-menu dxbs-dropdown-area">
+                                  <div class="dxbs-calendar" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C" data-observed="true">
+                                    <div class="calendar-row">
+                                      <div class="calendar-view card">
+                                        <div class="card-header btn-group">
+                                          <span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_PYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-backward"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_PTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_PMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_TC" class="dxbs-month-title btn btn-secondary" role="button" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">2020년
+                                            10월</span><span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_NMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_NTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                            id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_NYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-forward"></span></span>
+                                        </div>
+                                        <div class="card-body">
+                                          <table class="dxbs-month-table table table-sm table-bordered">
+                                            <tbody>
+                                              <tr class="text-center">
+                                                <td></td>
+                                                <th class="dxbs-calendar-dow">일</th>
+                                                <th class="dxbs-calendar-dow">월</th>
+                                                <th class="dxbs-calendar-dow">화</th>
+                                                <th class="dxbs-calendar-dow">수</th>
+                                                <th class="dxbs-calendar-dow">목</th>
+                                                <th class="dxbs-calendar-dow">금</th>
+                                                <th class="dxbs-calendar-dow">토</th>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    40
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>27</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>28</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>29</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>30</a></td>
+                                                <td class="dxbs-day"><a>1</a></td>
+                                                <td class="dxbs-day"><a>2</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>3</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    41
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>4</a></td>
+                                                <td class="dxbs-day"><a>5</a></td>
+                                                <td class="dxbs-day"><a>6</a></td>
+                                                <td class="dxbs-day dxbs-today dx-accent-color table-active" style=""><a>7</a></td>
+                                                <td class="dxbs-day"><a>8</a></td>
+                                                <td class="dxbs-day"><a>9</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>10</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    42
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>11</a></td>
+                                                <td class="dxbs-day"><a>12</a></td>
+                                                <td class="dxbs-day"><a>13</a></td>
+                                                <td class="dxbs-day"><a>14</a></td>
+                                                <td class="dxbs-day"><a>15</a></td>
+                                                <td class="dxbs-day"><a>16</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>17</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    43
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>18</a></td>
+                                                <td class="dxbs-day"><a>19</a></td>
+                                                <td class="dxbs-day"><a>20</a></td>
+                                                <td class="dxbs-day"><a>21</a></td>
+                                                <td class="dxbs-day"><a>22</a></td>
+                                                <td class="dxbs-day"><a>23</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>24</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    44
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>25</a></td>
+                                                <td class="dxbs-day"><a>26</a></td>
+                                                <td class="dxbs-day"><a>27</a></td>
+                                                <td class="dxbs-day"><a>28</a></td>
+                                                <td class="dxbs-day"><a>29</a></td>
+                                                <td class="dxbs-day"><a>30</a></td>
+                                                <td class="dxbs-day dxbs-weekend text-danger"><a>31</a></td>
+                                              </tr>
+                                              <tr class="text-center">
+                                                <td class="text-right"><small>
+                                                    45
+                                                  </small></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>1</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>2</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>3</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>4</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>5</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>6</a></td>
+                                                <td class="dxbs-day dxbs-other-month text-muted"><a>7</a></td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                        <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_yc" class="d-none">
+                                          <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_yt" class="dxbs-fast-nav">
+                                            <div class="card-body">
+                                              <table id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_yt_n" class="table table-sm table-bordered">
+                                                <tbody>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="btn-toolbar card-footer">
+                                      <span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_BT" class="btn btn-secondary">Today</span><span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C_BC"
+                                        class="btn btn-secondary">Clear</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_1" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_NM_I">거래처</label>
+                        <div class="dxbs-textbox dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_NM" style="width:100%;">
+                          <div>
+                            <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_NM_I" class="form-control text-muted" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtACCNT_NM" value="Like 조건 (%%제외)"
+                              savedspellcheck="[object Object]" spellcheck="false" autocomplete="off">
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_2" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_SUB_NM_I">간납처</label>
+                        <div class="dxbs-textbox dxbs-fl-ctrl" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_SUB_NM" style="width:100%;">
+                          <div>
+                            <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_SUB_NM_I" class="form-control text-muted" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtACCNT_SUB_NM"
+                              value="Like 조건 (%%제외)" savedspellcheck="[object Object]" spellcheck="false" autocomplete="off">
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_3" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB0_I_D">구분(승인)</label>
+                        <div class="dxbs-cbl dxbs-fl-ctrl form-control-plaintext hor radiobtn_set" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr" data-observed="true">
+                          <div>
+                            <div class="column-element">
+                              <div>
+                                <div class="form-check" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB0">
+                                  <input class="form-check-input" type="radio" checked="checked" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB0_I"><label class="form-check-label"
+                                    for="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB0_I"><span>주문타입</span></label>
+                                  <input type="hidden" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB0_S" value="C" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$rdoListAppr$RB0">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="column-element">
+                              <div>
+                                <div class="form-check" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB1">
+                                  <input class="form-check-input" type="radio" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB1_I"><label class="form-check-label"
+                                    for="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB1_I"><span>거래처명</span></label>
+                                  <input type="hidden" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB1_S" value="U" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$rdoListAppr$RB1">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="column-element">
+                              <div>
+                                <div class="form-check" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB2">
+                                  <input class="form-check-input" type="radio" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB2_I"><label class="form-check-label"
+                                    for="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB2_I"><span>배송타입</span></label>
+                                  <input type="hidden" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_RB2_S" value="U" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$rdoListAppr$RB2">
+                                </div>
+                              </div>
+                            </div>
+                          </div><input type="hidden" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_ValueInput" value="T"><input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr_VI" type="hidden"
+                            name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$rdoListAppr" value="0">
+                        </div>
+
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_4" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_I">마감상태</label>
+                        <script id="dxss_1185811797" data-executed="true">
+                          <!--
+                          ASPx.SS(function(ASPx, dx) {
+                            ASPx.AccessibilitySR.AddStringResources({
+                              'BlankEditorText': 'blank',
+                              'ComboBoxFilteringResultFormatString': 'The found item count is {0}. The selected item text is {1}. ',
+                              'ComboBoxCurrentTextFormatString': 'Current text is {2} ',
+                              'ItemPositionFormatString': ', {0} of {1}'
+                            });
+
+
+                          });
+                          //
+                          -->
+                        </script>
+                        <div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG">
+                          <div class="input-group">
+                            <div class="dxbs-input-cntr">
+                              <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_I" class="form-control input_redcheck" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboCOMMIT_FLG" value="미마감"
+                                autocomplete="off"><span></span>
+                            </div>
+                            <div class="input-group-append">
+                              <span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                  class="fas fa-chevron-down"></span></span>
+                              <div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_L" data-observed="true">
+                                <ul class="list-group">
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+                                </ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboCOMMIT_FLG$L" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_L_VI" value="N">
+                              </div>
+                            </div>
+                          </div>
+                        </div><input type="hidden" name="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_VI" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_VI" value="N">
+
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_5" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_I">TAX 예정일</label>
+                        <div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-date-edit" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT" style="width:100%;">
+                          <div class="input-group">
+                            <div class="dxbs-input-cntr" savedonclick="[object Object]" savedonkeyup="[object Object]" savedonmousedown="[object Object]" savedonmouseup="[object Object]">
+                              <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtTAXDT" value="2020-10-07" readonly="readonly"
+                                savedtabindex="[object Object]" tabindex="-1" savedonclick="[object Object]" savedonfocus="[object Object]" savedonblur="[object Object]" savedonkeydown="[object Object]" savedonkeypress="[object Object]"
+                                savedonkeyup="[object Object]" disabled="" autocomplete="off"><span></span>
+                            </div>
+                            <div class="input-group-append">
+                              <span class="dxbs-edit-btn btn btn-secondary disabled" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                  class="far fa-calendar-alt"></span></span>
+                              <div class="dxbs-dm dropdown-menu dxbs-dropdown-area">
+                                <div class="dxbs-calendar" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C" data-observed="true">
+                                  <div class="calendar-row">
+                                    <div class="calendar-view card">
+                                      <div class="card-header btn-group">
+                                        <span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_PYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-backward"></span></span><span
+                                          id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_PTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                          id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_PMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-left"></span></span><span
+                                          id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_TC" class="dxbs-month-title btn btn-secondary" role="button" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">2020년
+                                          10월</span><span id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_NMC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                          id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_NTPC" class="d-none btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-angle-right"></span></span><span
+                                          id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_NYC" class="btn btn-secondary"><span aria-hidden="true" class="dxbs-icon dxbs-icon-forward"></span></span>
+                                      </div>
+                                      <div class="card-body">
+                                        <table class="dxbs-month-table table table-sm table-bordered">
+                                          <tbody>
+                                            <tr class="text-center">
+                                              <td></td>
+                                              <th class="dxbs-calendar-dow">일</th>
+                                              <th class="dxbs-calendar-dow">월</th>
+                                              <th class="dxbs-calendar-dow">화</th>
+                                              <th class="dxbs-calendar-dow">수</th>
+                                              <th class="dxbs-calendar-dow">목</th>
+                                              <th class="dxbs-calendar-dow">금</th>
+                                              <th class="dxbs-calendar-dow">토</th>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  40
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>27</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>28</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>29</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>30</a></td>
+                                              <td class="dxbs-day"><a>1</a></td>
+                                              <td class="dxbs-day"><a>2</a></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>3</a></td>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  41
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>4</a></td>
+                                              <td class="dxbs-day"><a>5</a></td>
+                                              <td class="dxbs-day"><a>6</a></td>
+                                              <td class="dxbs-day dxbs-today dx-accent-color table-active" style=""><a>7</a></td>
+                                              <td class="dxbs-day"><a>8</a></td>
+                                              <td class="dxbs-day"><a>9</a></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>10</a></td>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  42
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>11</a></td>
+                                              <td class="dxbs-day"><a>12</a></td>
+                                              <td class="dxbs-day"><a>13</a></td>
+                                              <td class="dxbs-day"><a>14</a></td>
+                                              <td class="dxbs-day"><a>15</a></td>
+                                              <td class="dxbs-day"><a>16</a></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>17</a></td>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  43
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>18</a></td>
+                                              <td class="dxbs-day"><a>19</a></td>
+                                              <td class="dxbs-day"><a>20</a></td>
+                                              <td class="dxbs-day"><a>21</a></td>
+                                              <td class="dxbs-day"><a>22</a></td>
+                                              <td class="dxbs-day"><a>23</a></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>24</a></td>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  44
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>25</a></td>
+                                              <td class="dxbs-day"><a>26</a></td>
+                                              <td class="dxbs-day"><a>27</a></td>
+                                              <td class="dxbs-day"><a>28</a></td>
+                                              <td class="dxbs-day"><a>29</a></td>
+                                              <td class="dxbs-day"><a>30</a></td>
+                                              <td class="dxbs-day dxbs-weekend text-danger"><a>31</a></td>
+                                            </tr>
+                                            <tr class="text-center">
+                                              <td class="text-right"><small>
+                                                  45
+                                                </small></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>1</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>2</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>3</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>4</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>5</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>6</a></td>
+                                              <td class="dxbs-day dxbs-other-month text-muted"><a>7</a></td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                      <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_yc" class="d-none">
+                                        <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_yt" class="dxbs-fast-nav">
+                                          <div class="card-body">
+                                            <table id="CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C_yt_n" class="table table-sm table-bordered">
+                                              <tbody>
+                                                <tr>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                </tr>
+                                                <tr>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                </tr>
+                                                <tr>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                  <td></td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_6" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_I">마감내역</label>
+                        <div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox borderblue" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST" style="width:100%;">
+                          <div class="input-group">
+                            <div class="dxbs-input-cntr">
+                              <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboAPPRLIST" autocomplete="off"><span></span>
+                            </div>
+                            <div class="input-group-append">
+                              <span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                  class="fas fa-chevron-down"></span></span>
+                              <div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_L" data-observed="true">
+                                <ul class="list-group">
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+                                </ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboAPPRLIST$L" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_L_VI" value="">
+                              </div>
+                            </div>
+                          </div>
+                        </div><input type="hidden" name="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_VI" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_VI" value="">
+
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_7" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt" for="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_I">미승인내역</label>
+                        <div class="dxbs-dropdown-edit dxbs-fl-ctrl dxbs-combobox borderpink" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST" style="width:100%;">
+                          <div class="input-group">
+                            <div class="dxbs-input-cntr">
+                              <input id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboUAPPRLIST" autocomplete="off"><span></span>
+                            </div>
+                            <div class="input-group-append">
+                              <span class="dxbs-edit-btn btn btn-secondary" data-toggle="dropdown-show" role="button" aria-haspopup="true" aria-expanded="false" aria-label="Open or close the drop-down window"><span aria-hidden="true"
+                                  class="fas fa-chevron-down"></span></span>
+                              <div class="dxbs-listbox dxbs-dropdown-area dxbs-dm dropdown-menu dx-dropdown-menu" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_L" data-observed="true">
+                                <ul class="list-group">
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_LVirtualScrollTopSpacer" data-type="spacer"></li>
+
+                                  <li id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_LVirtualScrollBottomSpacer" data-type="spacer"></li>
+                                </ul><input type="hidden" name="ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboUAPPRLIST$L" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_L_VI" value="">
+                              </div>
+                            </div>
+                          </div>
+                        </div><input type="hidden" name="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_VI" id="CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_VI" value="">
+
+                      </div>
+                    </div>
+                    <div id="CallbackPanelBase_mainContent_SD0080_FormLayout1_8" class="col-12 col-sm-6 col-md-6 col-lg-4">
+                      <div class="form-group">
+                        <label class="col-form-label dxbs-fl-cpt">건수</label>
+                        <div class="dxbs-fl-ctrl">
+
+                          <label id="CallbackPanelBase_mainContent_SD0080_FormLayout1_divCNT" class="f12" style="border: 1px solid #ced4da; height: 30px;"></label>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-12">
+                <div class="dxbs-gridview dbt-gridview" id="CallbackPanelBase_mainContent_grd1">
+                  <div class="card">
+                    <table id="CallbackPanelBase_mainContent_grd1_DXMainTable" class="dxbs-table table table-bordered table-sm border-top-0">
+                      <thead>
+                        <tr id="CallbackPanelBase_mainContent_grd1_DXHeadersRow0" class="bg-light text-dark">
+                          <th id="CallbackPanelBase_mainContent_grd1_col0" class="dxbs-noclick dxbs-cmd-cell">
+                            <div class="dxbs-fixed-header-content">
+                              <span>#</span>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col1" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="주문일자 header column. " href="javascript:;">주문일자</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col2" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="주문번호 header column. " href="javascript:;">주문번호</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col3" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="주문유형 header column. " href="javascript:;">주문유형</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col4" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="거래처 header column. " href="javascript:;">거래처</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col5" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="간납처 header column. " href="javascript:;">간납처</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col6" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="품목(N) header column. " href="javascript:;">품목(N)</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col7" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="TAX발행일 header column. " href="javascript:;">TAX발행일</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col8" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="TAX번호 header column. " href="javascript:;">TAX번호</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col9" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="통 header column. " href="javascript:;">통</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col10" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="NO header column. " href="javascript:;">NO</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col11" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="창고 header column. " href="javascript:;">창고</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col12" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="E header column. " href="javascript:;">E</a>
+                            </div>
+                          </th>
+                          <th id="CallbackPanelBase_mainContent_grd1_col13" class="dxbs-nrb" scope="col">
+                            <div class="dxbs-fixed-header-content">
+                              <a data-toggle="gridview-column-sort" aria-label="매출액 header column. " href="javascript:;">매출액</a>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr id="CallbackPanelBase_mainContent_grd1_DXEmptyRow" class="dxbs-empty-data-row dxgvLVR">
+                          <td colspan="14">
+                            <div>
+                              No data to display
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr id="CallbackPanelBase_mainContent_grd1_DXFooterRow" class="dxbs-footer-row">
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td class="text-right font-weight-bold">Count=0</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td class="text-right font-weight-bold dxbs-nrb">Sum=</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="">
+              <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_mainContent_btnLoad1" type="submit" name="ctl00$CallbackPanelBase$mainContent$btnLoad1" style=""></button>
+              <div class="dxbs-textbox" id="CallbackPanelBase_mainContent_hidORDER_UID" style="display:none;">
+                <div>
+                  <input id="CallbackPanelBase_mainContent_hidORDER_UID_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$hidORDER_UID" autocomplete="off">
+                </div>
+              </div>
+              <div class="dxbs-textbox" id="CallbackPanelBase_mainContent_hidROW_ID" style="display:none;">
+                <div>
+                  <input id="CallbackPanelBase_mainContent_hidROW_ID_I" class="form-control" type="text" name="ctl00$CallbackPanelBase$mainContent$hidROW_ID" autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <table class="dxlpLoadingPanel dxlpControl" id="CallbackPanelBase_LoadingPanel" role="presentation" style="position:absolute;left:0px;top:0px;z-index:30000;display:none;">
+              <tbody>
+                <tr>
+                  <td class="dx" style="padding-right:0px;"><span class="dx-acc dxlp-loadingImage dxlp-imgPosLeft dx-acc-s"><img src="/DXR.axd?r=1_89-boual" alt="Loading image"></span></td>
+                  <td class="dx" style="padding-left:0px;"><span id="CallbackPanelBase_LoadingPanel_TL">처리중입니다...</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="CallbackPanelBase_LoadingPanel_LD" class="dxlpLoadingDiv dxlpControl dx-ft" style="opacity:0.5;left:0px;top:0px;z-index:29999;display:none;position:absolute;">
+
+            </div>
+            <script id="dxss_1193463879" data-executed="true">
+              <!--
+              ASPx.SS(function(ASPx, dx) {
+                ASPx.createControl(ASPxClientLoadingPanel, 'CallbackPanelBase_LoadingPanel', 'LoadingPanel', {
+                  'uniqueID': 'ctl00$CallbackPanelBase$LoadingPanel',
+                  'accessibilityCompliant': true
+                });
+
+              });
+              //
+              -->
+            </script>
+            <div class="dxbs-popup dx-hc modal-dialog dxbs-popup-fixed-width" id="CallbackPanelBase_UC_ERROR_ErrorPopup" role="dialog" style="width:500px;">
+              <div class="modal-content" role="document">
+                <div class="modal-header">
+
+                  <h4 class="text-primary">
+                    <span class="fa fa-info-circle red"></span> Attention
+                  </h4>
+
+                </div>
+                <div class="modal-body">
+
+                  <b id="CallbackPanelBase_UC_ERROR_ErrorPopup_ErrorMsg"></b>
+
+                </div>
+                <div class="modal-footer">
+
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_ERROR_ErrorPopup_TPCFm1_btnErrorPopup" type="button" name="ctl00$CallbackPanelBase$UC_ERROR$ErrorPopup$TPCFm1$TC$btnErrorPopup" value="OK">OK</button>
+
+                </div>
+              </div>
+            </div>
+            <div id="CallbackPanelBase_UC_ERROR_ErrorPopup_OV" class="show dxbs-modal-back"></div>
+            <div class="dxbs-popup dx-hc modal-dialog dxbs-popup-fixed-width" id="CallbackPanelBase_UC_MESSAGE_MsgPopup" role="dialog" style="width:500px;">
+              <div class="modal-content" role="document">
+                <div class="modal-header">
+
+                  <h4 class="text-primary">
+                    <span class="fa fa-info-circle"></span> Information
+                  </h4>
+
+                </div>
+                <div class="modal-body">
+
+                  <b id="CallbackPanelBase_UC_MESSAGE_MsgPopup_MsgMsg"></b>
+
+                </div>
+                <div class="modal-footer">
+
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_MESSAGE_MsgPopup_TPCFm1_btnMsgPopup" type="button" name="ctl00$CallbackPanelBase$UC_MESSAGE$MsgPopup$TPCFm1$TC$btnMsgPopup" value="OK">OK</button>
+
+                </div>
+              </div>
+            </div>
+            <div id="CallbackPanelBase_UC_MESSAGE_MsgPopup_OV" class=" show dxbs-modal-back"></div>
+            <div class="dxbs-popup dx-hc modal-dialog dxbs-popup-fixed-width" id="CallbackPanelBase_UC_CONFIRM_ConfPopup" role="dialog" style="width:500px;">
+              <div class="modal-content" role="document">
+                <div class="modal-body">
+
+                  <b id="CallbackPanelBase_UC_CONFIRM_ConfPopup_ConfMsg"></b>
+
+                </div>
+                <div class="modal-footer">
+
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_CONFIRM_ConfPopup_TPCFm1_btnConfPopupOK" type="button" name="ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupOK" value="OK">OK</button>
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_CONFIRM_ConfPopup_TPCFm1_btnConfPopupCancel" type="button" name="ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupCancel"
+                    value="Cancel">Cancel</button>
+
+                </div>
+              </div>
+            </div>
+            <div id="CallbackPanelBase_UC_CONFIRM_ConfPopup_OV" class=" show dxbs-modal-back"></div>
+            <div class="dxbs-popup dx-hc modal-dialog dxbs-popup-fixed-width" id="CallbackPanelBase_UC_CONFIRM2_ConfPopup2" role="dialog" style="width:500px;">
+              <div class="modal-content" role="document">
+                <div class="modal-body">
+
+                  <b id="CallbackPanelBase_UC_CONFIRM2_ConfPopup2_ConfMsg2"></b>
+
+                </div>
+                <div class="modal-footer">
+
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_CONFIRM2_ConfPopup2_TPCFm1_btnConf2PopupOK" type="button" name="ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupOK" value="OK">OK</button>
+                  <button class="btn btn-secondary dxbs-button" id="CallbackPanelBase_UC_CONFIRM2_ConfPopup2_TPCFm1_btnConf2PopupCancel" type="button" name="ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupCancel"
+                    value="Cancel">Cancel</button>
+
+                </div>
+              </div>
+            </div>
+            <div id="CallbackPanelBase_UC_CONFIRM2_ConfPopup2_OV" class=" show dxbs-modal-back"></div>
+
+          </div>
+        </dx:panelcontent>
+
+      </div>
+    </div>
+    <div class="d-none">
+      <button class="btn btn-secondary dxbs-button" id="hidDftBtn" type="submit" name="ctl00$hidDftBtn"></button>
+      <div class="dxbs-textbox" id="hidLoginInfo">
+        <div>
+          <input id="hidLoginInfo_I" class="form-control" type="text" name="ctl00$hidLoginInfo" autocomplete="off">
+        </div>
+      </div>
+      <script id="dxss_993171486" data-executed="true">
+        <!--
+        ASPx.SS(function(ASPx, dx) {
+          ASPx.InitializeSVGSprite();
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainSearch', 'MainSearch', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainSearch',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainNew', 'MainNew', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainNew',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainSave', 'MainSave', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainSave',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainDelete', 'MainDelete', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainDelete',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainCancel', 'MainCancel', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainCancel',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainExcelExport', 'MainExcelExport', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainExcelExport',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_MainPrint', 'MainPrint', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$MainPrint',
+            'serverEvents': ['Click']
+          }, {
+            'Click': MenuButton_Click
+          });
+
+          ASPx.createControl(dx.BootstrapClientCalendar, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT_C', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtSTARTDT$C',
+            'serverCurrentDate': new Date(2020, 9, 7, 0, 0, 0, 0),
+            'visibleDate': new Date(2020, 9, 6, 0, 0, 0, 0),
+            'fastNavRollbackTexts': ['Back To Days', 'Back To Months', 'Back To Years'],
+            'isDateEditCalendar': true,
+            'cssClasses': {
+              'd': 'dxbs-day',
+              'ddd': 'disabled text-muted',
+              'da': 'dxbs-other-month text-muted',
+              'do': 'dxbs-out-of-range disabled text-muted',
+              'ds': 'table-active',
+              'dw': 'dxbs-weekend text-danger',
+              'dt': 'dxbs-today dx-accent-color',
+              'fni': 'dxbs-fast-nav-item',
+              'fnia': 'text-muted'
+            }
+          }, null, null, {
+            'selection': [new Date(2020, 9, 6, 0, 0, 0, 0)]
+          });
+
+          ASPx.createControl(dx.BootstrapClientDateEdit, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT', 'txtSTARTDT', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtSTARTDT', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtSTARTDT', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtSTARTDT',
+            'stateObject': {
+              'useMinDateInsteadOfNull': false,
+              'rawValue': '1601977817321.54'
+            },
+            'displayFormat': '{0:yyyy-MM-dd}',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'outOfRangeWarningMessages': ['The date must be in the range {0}...{1}', 'The date must be greater than or equal to {0}', 'The date must be less than or equal to {0}'],
+            'allowMouseWheel': false,
+            'date': new Date(2020, 9, 6, 9, 50, 17, 321),
+            'dateFormatter': ASPx.DateFormatter.Create('yyyy-MM-dd'),
+            'loadingPanel': {
+              'fade': false
+            },
+            'cssClasses': {}
+          }, null, null, {
+            'maskInfo': {
+              'maskText': 'yyyy-MM-dd',
+              'dateTimeOnly': true,
+              'properties': {
+                'allowMouseWheel': false
+              }
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientCalendar, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT_C', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtENDDT$C',
+            'serverCurrentDate': new Date(2020, 9, 7, 0, 0, 0, 0),
+            'visibleDate': new Date(2020, 9, 7, 0, 0, 0, 0),
+            'fastNavRollbackTexts': ['Back To Days', 'Back To Months', 'Back To Years'],
+            'isDateEditCalendar': true,
+            'cssClasses': {
+              'd': 'dxbs-day',
+              'ddd': 'disabled text-muted',
+              'da': 'dxbs-other-month text-muted',
+              'do': 'dxbs-out-of-range disabled text-muted',
+              'ds': 'table-active',
+              'dw': 'dxbs-weekend text-danger',
+              'dt': 'dxbs-today dx-accent-color',
+              'fni': 'dxbs-fast-nav-item',
+              'fnia': 'text-muted'
+            }
+          }, null, null, {
+            'selection': [new Date(2020, 9, 7, 0, 0, 0, 0)]
+          });
+
+          ASPx.createControl(dx.BootstrapClientDateEdit, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT', 'txtENDDT', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtENDDT', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtENDDT', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtENDDT',
+            'stateObject': {
+              'useMinDateInsteadOfNull': false,
+              'rawValue': '1602064217321.54'
+            },
+            'displayFormat': '{0:yyyy-MM-dd}',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'outOfRangeWarningMessages': ['The date must be in the range {0}...{1}', 'The date must be greater than or equal to {0}', 'The date must be less than or equal to {0}'],
+            'allowMouseWheel': false,
+            'date': new Date(2020, 9, 7, 9, 50, 17, 321),
+            'dateFormatter': ASPx.DateFormatter.Create('yyyy-MM-dd'),
+            'loadingPanel': {
+              'fade': false
+            },
+            'cssClasses': {}
+          }, null, null, {
+            'maskInfo': {
+              'maskText': 'yyyy-MM-dd',
+              'dateTimeOnly': true,
+              'properties': {
+                'allowMouseWheel': false
+              }
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientTextBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_NM', 'txtACCNT_NM', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtACCNT_NM',
+            'stateObject': {
+              'rawValue': ''
+            },
+            'nullText': 'Like 조건 (%%제외)',
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientTextBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtACCNT_SUB_NM', 'txtACCNT_SUB_NM', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtACCNT_SUB_NM',
+            'stateObject': {
+              'rawValue': ''
+            },
+            'nullText': 'Like 조건 (%%제외)',
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientRadioButtonList, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr', 'rdoListAppr', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$rdoListAppr',
+            'savedSelectedIndex': 0
+          }, {
+            'SelectedIndexChanged': rdoListAppr_SelectedIndexChanged
+          }, null, {
+            'items': [
+              ['주문타입', 'T', ''],
+              ['거래처명', 'A', ''],
+              ['배송타입', 'D', '']
+            ]
+          });
+
+          ASPx.createControl(dx.BootstrapClientListBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG_L', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboCOMMIT_FLG$L',
+            'stateObject': {
+              'CustomCallback': ''
+            },
+            'savedSelectedIndex': 1,
+            'isComboBoxList': true,
+            'hasSampleItem': true,
+            'itemTotalCount': 2,
+            'itemsInfo': [{
+              'value': 'Y',
+              'text': '마감'
+            }, {
+              'value': 'N',
+              'text': '미마감'
+            }],
+            'cssClasses': {}
+          }, {
+            'SelectedIndexChanged': function(s, e) {
+              ASPx.CBLBSelectedIndexChanged('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG', e);
+            },
+            'ItemClick': function(s, e) {
+              ASPx.CBLBItemMouseUp('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG', e);
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientComboBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG', 'cboCOMMIT_FLG', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboCOMMIT_FLG', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboCOMMIT_FLG', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboCOMMIT_FLG',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'ddmInput': true,
+            'lastSuccessValue': 'N',
+            'islastSuccessValueInit': true,
+            'loadingPanel': {},
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientCalendar, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT_C', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtTAXDT$C',
+            'readOnly': true,
+            'serverCurrentDate': new Date(2020, 9, 7, 0, 0, 0, 0),
+            'visibleDate': new Date(2020, 9, 7, 0, 0, 0, 0),
+            'fastNavRollbackTexts': ['Back To Days', 'Back To Months', 'Back To Years'],
+            'isDateEditCalendar': true,
+            'cssClasses': {
+              'd': 'dxbs-day',
+              'ddd': 'disabled text-muted',
+              'da': 'dxbs-other-month text-muted',
+              'do': 'dxbs-out-of-range disabled text-muted',
+              'ds': 'table-active',
+              'dw': 'dxbs-weekend text-danger',
+              'dt': 'dxbs-today dx-accent-color',
+              'fni': 'dxbs-fast-nav-item',
+              'fnia': 'text-muted'
+            }
+          }, null, null, {
+            'selection': [new Date(2020, 9, 7, 0, 0, 0, 0)]
+          });
+
+          ASPx.createControl(dx.BootstrapClientDateEdit, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT', 'txtTAXDT', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtTAXDT', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_txtTAXDT', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$txtTAXDT',
+            'clientEnabled': false,
+            'stateObject': {
+              'useMinDateInsteadOfNull': false,
+              'rawValue': '1602064217321.54'
+            },
+            'readOnly': true,
+            'displayFormat': '{0:yyyy-MM-dd}',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'outOfRangeWarningMessages': ['The date must be in the range {0}...{1}', 'The date must be greater than or equal to {0}', 'The date must be less than or equal to {0}'],
+            'date': new Date(2020, 9, 7, 9, 50, 17, 321),
+            'dateFormatter': ASPx.DateFormatter.Create('yyyy-MM-dd'),
+            'loadingPanel': {
+              'fade': false
+            },
+            'cssClasses': {}
+          }, null, null, {
+            'maskInfo': {
+              'maskText': 'yyyy-MM-dd',
+              'dateTimeOnly': true
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientListBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST_L', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboAPPRLIST$L',
+            'stateObject': {
+              'CustomCallback': ''
+            },
+            'savedSelectedIndex': 0,
+            'isComboBoxList': true,
+            'hasSampleItem': true,
+            'itemTotalCount': 1,
+            'itemsInfo': [{
+              'value': '',
+              'text': ''
+            }],
+            'cssClasses': {}
+          }, {
+            'SelectedIndexChanged': function(s, e) {
+              ASPx.CBLBSelectedIndexChanged('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST', e);
+            },
+            'ItemClick': function(s, e) {
+              ASPx.CBLBItemMouseUp('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST', e);
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientComboBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST', 'cboAPPRLIST', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboAPPRLIST', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboAPPRLIST', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboAPPRLIST',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'ddmInput': true,
+            'dropDownRows': 20,
+            'lastSuccessValue': null,
+            'islastSuccessValueInit': true,
+            'loadingPanel': {},
+            'cssClasses': {}
+          }, {
+            'SelectedIndexChanged': cboAPPRLIST_OnSelectedIndexChanged
+          });
+
+          ASPx.createControl(dx.BootstrapClientListBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST_L', '', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboUAPPRLIST$L',
+            'stateObject': {
+              'CustomCallback': ''
+            },
+            'savedSelectedIndex': 0,
+            'isComboBoxList': true,
+            'hasSampleItem': true,
+            'itemTotalCount': 1,
+            'itemsInfo': [{
+              'value': '',
+              'text': ''
+            }],
+            'cssClasses': {}
+          }, {
+            'SelectedIndexChanged': function(s, e) {
+              ASPx.CBLBSelectedIndexChanged('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST', e);
+            },
+            'ItemClick': function(s, e) {
+              ASPx.CBLBItemMouseUp('CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST', e);
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientComboBox, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST', 'cboUAPPRLIST', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboUAPPRLIST', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_SD0080_FormLayout1_cboUAPPRLIST', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1$cboUAPPRLIST',
+            'autoCompleteAttribute': {
+              'name': 'autocomplete',
+              'value': 'off'
+            },
+            'ddmInput': true,
+            'dropDownRows': 20,
+            'lastSuccessValue': null,
+            'islastSuccessValueInit': true,
+            'loadingPanel': {},
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientFormLayout, 'CallbackPanelBase_mainContent_SD0080_FormLayout1', 'SD0080_FormLayout1', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$SD0080_FormLayout1',
+            'alignItemCaptionsInAllGroups': true,
+            'showItemCaptionColon': false
+          }, null, null, {
+            'items': [{
+              'name': '',
+              'path': '0'
+            }, {
+              'name': '',
+              'path': '1'
+            }, {
+              'name': '',
+              'path': '2'
+            }, {
+              'name': '',
+              'path': '3'
+            }, {
+              'name': '',
+              'path': '4'
+            }, {
+              'name': '',
+              'path': '5'
+            }, {
+              'name': '',
+              'path': '6'
+            }, {
+              'name': '',
+              'path': '7'
+            }, {
+              'name': '',
+              'path': '8'
+            }],
+            'captionAssociatingItems': [
+              ['CallbackPanelBase_mainContent_SD0080_FormLayout1_3_Cap', 'CallbackPanelBase_mainContent_SD0080_FormLayout1_rdoListAppr', ]
+            ]
+          });
+
+          ASPx.createControl(dx.BootstrapClientGridView, 'CallbackPanelBase_mainContent_grd1', 'grd1', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$mainContent$grd1', arg, ASPx.Callback, 'CallbackPanelBase_mainContent_grd1', ASPx.CallbackError, true);
+            },
+            'disableSwipeGestures': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$grd1',
+            'stateObject': {
+              'selection': '',
+              'callbackState': '/zZvc9HdMhve9Dz3MtRR8gaIxOS59kYb17YQG5FOSmch68U/LX+Pxs2bEaOsSDkCWrBwgecyJfdP1iLwIZKVcOoJv4mkAY1qfhT+YRgE+VZDNAj94tTp3v4YSASnvNsAr14NwMsbpYQKx2hbGwnQx6/dYyE8ETs7RWsanIBkIh4tZsINdeUYzGFQE1oLDQJJvw0Qo/A38NXeXZ1XB63McXsED3tx8JsREIViyJV3dWFriumTch08j2tAAP2oihZymiS6hQg/hWs5FW8dBF1MdiDjTqH+rTvDB4+dG+cjx6rXupSdSP54n886tR4mvmwJgKFWRQifMiWLSMvpySCiT9rS30/ikPMIL0Db1qPsM11iBvnrFfCtqAl+rtbOmwMmy6QZD+OAm73mAid0qYA3rC6yOS5/TJTtwQXw62ZWZO9U5oA3BSiPVFECN0Y4rgBzo4wkU63nPMHNw0t2iYK3l9s25XF2CGp8kj8B9YIn5ULpvxKZ9q+aY0jUPp3um4dDrdxxON6ZkqU5JYoQ8dAWh+Ebvg38kvXWBKBtteedxUCmyPJZY3vpj4bUuEZLDkwJdw/IGoOzIJjOtC/VYExahluTDW6561B8OlxGjFdQcR1MqBpFtIOabCm1zKZ1IbsrzrGt/jG+Dq4vd5/Dic0Xht02qW+CJIqTFgQnwSOphx3X9PSAiaMqRXRZ2VPj94C89jYZ9ldSYM7qAryRt70ReEi1t/T+BHRX1KuNa9NYNzvA0I4x19VdTEUW7g48k8lcVPR0k870UhpDLumq7Vq4A6rfKNVq9IbEPNgtOXc4xhYa1vF238ZEeYx23G+OQoPwU12A8ZS6SS7Cfh2hyu8gT2DaYJiUr36UXbd3O8gqWrQvRZGU7Gku6GcanU+iozmkJgq2kvcPM5CBaT7RkKDvTbfL8bcVS1IVxo5e+wLrPB2D4c8OLwjd43lLpgrPYSQgj9Wgn67g42Z1E+BzvJ9VLAd6drPkVCtMWpysH7U+ldeThn8SAvDCf1yjSFSKrs8XsZ0afdKzYAOODmd0mg7mAmzwBalapaBybxbRBvRgHJHk/K6IYEGCHIRXf0mB9N+R4L02Bi9Ium3EawvveZqV4ZgKo+O4+PX5QgmIFJFCDp8+BN7aq+MgSGH9uZGWtyGt82hsbJHAlJOsBofLKGmo5RcedOsuVulvIg5pea5VO15lZ2zntGJamtyP0d8M4XDeOWE+VQRdHjSBGiODuH4vWT7V5nI2nx2LmFALh0u9Qu7ljTanhJ3gmQuexgePBhklHrlisKJQvrKiWjqXJAMS+hVk1eH65AfZWlkYOJj++N8UCAbiaz7JXJcXdqkh56AxDqjrwvP9lJoQsS0PggqvZv2JSx0eM8JSmvSI+36LwFmRUqn+iZeKraadP3iiJeBpIwRdKtTYxk/JC/UKJTA3gpc6DcppmQEtG66EQ6it02RbROS14NXfmgwvcPHxYm6QdhvML8rLq7RS3feXnklWQlDz9gxzqlQiKLzSRRiuqur1Vm9BzL8IVb231pMS01yKlkK3ykWrlAtJy2M/Cu3rCI/HCadf21iBtUhWVk9N7nP3PaukzwMJJJqx49H29HVYfBtR7ibzrwhEsL30M570cw==',
+              'groupLevelState': {},
+              'keys': [],
+              'focusedRow': ''
+            },
+            'cpVisibleRowCount': 0,
+            'callBacksEnabled': true,
+            'pageRowCount': 0,
+            'pageRowSize': 10,
+            'pageIndex': -1,
+            'pageCount': 0,
+            'selectedWithoutPageRowCount': 0,
+            'visibleStartIndex': 0,
+            'focusedRowIndex': -1,
+            'allowFocusedRow': true,
+            'allowSelectByItemClick': false,
+            'allowSelectSingleRowOnly': false,
+            'callbackOnFocusedRowChanged': false,
+            'callbackOnSelectionChanged': false,
+            'editState': 0,
+            'editItemVisibleIndex': -1,
+            'searchPanelFilter': '',
+            'allowDelete': false,
+            'allowEdit': false,
+            'allowInsert': false,
+            'columnProp': [
+              [0, , '_SELECT_', , 0, , , , 0, , 1, , , 0, 0],
+              [1, , , 'ORDER_DT', , , , , 1, , , , , , 0],
+              [2, , , 'ORDER_UID', , , , , 2, , , , , , 0],
+              [3, , , 'ORDER_TYPE_NM', , , , , 3, , , , , , 0],
+              [4, , , 'ACCNT_NM', , , , , 4, , , , , , 0],
+              [5, , , 'ACCNT_SUB_NM', , , , , 5, , , , , , 0],
+              [6, , , 'PROD_CNT', , , , , 6, , , , , , 0],
+              [7, , , 'TAX_DT', , , , , 7, , , , , , 0],
+              [8, , , 'TAX_UID', , , , , 8, , , , , , 0],
+              [9, , , 'DELIVERY_COMBINE', , , , , 9, , , , , , 0],
+              [10, , , 'DELIVERY_GROUP_NO', , , , , 10, , , , , , 0],
+              [11, , , 'PR_INVENTORY_NM', , , , , 11, , , , , , 0],
+              [12, , , 'EBILL_FLG', , , , , 12, , , , , , 0],
+              [13, , , 'TOT_AMT', , , , , 13, , , , , , 0],
+              [14, 0, , 'ROW_ID', 0, , , , , , , , , , 0, , 1],
+              [15, 0, , 'ACCNT_ID', 0, , , , , , , , , , 0, , 1],
+              [16, 0, , 'ACCNT_SUB_ID', 0, , , , , , , , , , 0, , 1],
+              [17, 0, , 'ORDER_TYPE_CD', 0, , , , , , , , , , 0, , 1],
+              [18, 0, , 'ORDER_ACCNT_TYPE_CD', 0, , , , , , , , , , 0, , 1],
+              [19, 0, , 'POST_FLG', 0, , , , , , , , , , 0, , 1],
+              [20, 0, , 'COMMIT_FLG', 0, , , , , , , , , , 0, , 1],
+              [21, 0, , 'TBILL_FLG', 0, , , , , , , , , , 0, , 1],
+              [22, 0, , 'OUT_FLG', 0, , , , , , , , , , 0, , 1],
+              [23, 0, , 'ETAX_FLG', 0, , , , , , , , , , 0, , 1]
+            ],
+            'pendingEvents': ['RaiseFocusedItemChangedOutOfServer'],
+            'shouldScrollToNewRow': false,
+            'editMode': 2,
+            'indentColumnCount': 0,
+            'allowChangeColumnHierarchy': false,
+            'allowMultiColumnAutoFilter': false,
+            'loadingPanel': {},
+            'cssClasses': {
+              'iei': 'dxbs-icon dxbs-icon-error',
+              'idadad': 'dxbs-icon dxbs-icon-arrow-down',
+              'idadau': 'dxbs-icon dxbs-icon-arrow-up',
+              'idadal': 'dxbs-icon dxbs-icon-arrow-down rotated',
+              'idadar': 'dxbs-icon dxbs-icon-arrow-up rotated'
+            }
+          });
+          dx.BootstrapClientGridView.postponeInit('CallbackPanelBase_mainContent_grd1', ({
+            'errorItemHtml': '<tr class="table-danger">\r\n\t<td data-colSpan="14"></td>\r\n</tr>'
+          }));
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_mainContent_btnLoad1', 'btnLoad1', {
+            'autoPostBack': true,
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$btnLoad1',
+            'clientVisible': false,
+            'serverEvents': ['Click'],
+            'isTextEmpty': true
+          });
+
+          ASPx.createControl(dx.BootstrapClientTextBox, 'CallbackPanelBase_mainContent_hidORDER_UID', 'hidORDER_UID', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$hidORDER_UID',
+            'clientVisible': false,
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientTextBox, 'CallbackPanelBase_mainContent_hidROW_ID', 'hidROW_ID', {
+            'uniqueID': 'ctl00$CallbackPanelBase$mainContent$hidROW_ID',
+            'clientVisible': false,
+            'cssClasses': {}
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_ERROR_ErrorPopup_TPCFm1_btnErrorPopup', 'btnErrorPopup', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_ERROR$ErrorPopup$TPCFm1$TC$btnErrorPopup',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_ERROR$ErrorPopup$TPCFm1$TC$btnErrorPopup", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              ErrorPopup.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientPopupControl, 'CallbackPanelBase_UC_ERROR_ErrorPopup', 'ErrorPopup', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$UC_ERROR$ErrorPopup', arg, ASPx.Callback, 'CallbackPanelBase_UC_ERROR_ErrorPopup', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_ERROR$ErrorPopup',
+            'popupAnimationType': 'fade',
+            'closeAction': 'None',
+            'popupHorizontalAlign': 'WindowCenter',
+            'popupVerticalAlign': 'WindowCenter',
+            'isPopupPositionCorrectionOn': false,
+            'modal': true,
+            'width': 500,
+            'widthFromServer': true,
+            'defaultWindowPopupElementIDList': '#info-popup-control',
+            'loadingPanel': {},
+            'overlay': {}
+          }, {
+            'CloseUp': function(s, e) {
+              fnPopUP_ErrorOnCloseUp(s, e, 'btnErrorPopup', 'ErrorMsg');
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_MESSAGE_MsgPopup_TPCFm1_btnMsgPopup', 'btnMsgPopup', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_MESSAGE$MsgPopup$TPCFm1$TC$btnMsgPopup',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_MESSAGE$MsgPopup$TPCFm1$TC$btnMsgPopup", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              MsgPopup.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientPopupControl, 'CallbackPanelBase_UC_MESSAGE_MsgPopup', 'MsgPopup', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$UC_MESSAGE$MsgPopup', arg, ASPx.Callback, 'CallbackPanelBase_UC_MESSAGE_MsgPopup', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_MESSAGE$MsgPopup',
+            'popupAnimationType': 'fade',
+            'closeAction': 'None',
+            'popupHorizontalAlign': 'WindowCenter',
+            'popupVerticalAlign': 'WindowCenter',
+            'isPopupPositionCorrectionOn': false,
+            'modal': true,
+            'width': 500,
+            'widthFromServer': true,
+            'defaultWindowPopupElementIDList': '#info-popup-control',
+            'loadingPanel': {},
+            'overlay': {}
+          }, {
+            'CloseUp': function(s, e) {
+              fnPopUP_MessageOnCloseUp(s, e, 'btnMsgPopup', 'MsgMsg');
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_CONFIRM_ConfPopup_TPCFm1_btnConfPopupOK', 'btnConfPopupOK', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupOK',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupOK", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              ConfPopup.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_CONFIRM_ConfPopup_TPCFm1_btnConfPopupCancel', 'btnConfPopupCancel', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupCancel',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup$TPCFm1$TC$btnConfPopupCancel", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              ConfPopup.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientPopupControl, 'CallbackPanelBase_UC_CONFIRM_ConfPopup', 'ConfPopup', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup', arg, ASPx.Callback, 'CallbackPanelBase_UC_CONFIRM_ConfPopup', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM$ConfPopup',
+            'popupAnimationType': 'fade',
+            'closeAction': 'None',
+            'popupHorizontalAlign': 'WindowCenter',
+            'popupVerticalAlign': 'WindowCenter',
+            'isPopupPositionCorrectionOn': false,
+            'modal': true,
+            'width': 500,
+            'widthFromServer': true,
+            'defaultWindowPopupElementIDList': '#info-popup-control',
+            'loadingPanel': {},
+            'overlay': {}
+          }, {
+            'CloseUp': function(s, e) {
+              fnPopUP_ConfirmOnCloseUp(s, e, 'btnConfPopupOK', 'ConfMsg');
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_CONFIRM2_ConfPopup2_TPCFm1_btnConf2PopupOK', 'btnConf2PopupOK', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupOK',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupOK", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              ConfPopup2.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'CallbackPanelBase_UC_CONFIRM2_ConfPopup2_TPCFm1_btnConf2PopupCancel', 'btnConf2PopupCancel', {
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupCancel',
+            'useSubmitBehavior': false,
+            'autoPostBackFunction': function(postBackArg) {
+              WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2$TPCFm1$TC$btnConf2PopupCancel", postBackArg, true, "", "", false, true));
+            }
+          }, {
+            'Click': function(s, e) {
+              ConfPopup2.Hide();
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientPopupControl, 'CallbackPanelBase_UC_CONFIRM2_ConfPopup2', 'ConfPopup2', {
+            'callBack': function(arg) {
+              WebForm_DoCallback('ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2', arg, ASPx.Callback, 'CallbackPanelBase_UC_CONFIRM2_ConfPopup2', ASPx.CallbackError, true);
+            },
+            'uniqueID': 'ctl00$CallbackPanelBase$UC_CONFIRM2$ConfPopup2',
+            'popupAnimationType': 'fade',
+            'closeAction': 'None',
+            'popupHorizontalAlign': 'WindowCenter',
+            'popupVerticalAlign': 'WindowCenter',
+            'isPopupPositionCorrectionOn': false,
+            'modal': true,
+            'width': 500,
+            'widthFromServer': true,
+            'defaultWindowPopupElementIDList': '#info-popup-control',
+            'loadingPanel': {},
+            'overlay': {}
+          }, {
+            'CloseUp': function(s, e) {
+              fnPopUP_Confirm2OnCloseUpOk(s, e, 'btnConfPopupOK', 'ConfMsg2');
+              fnPopUP_ConfirmOnCloseUpCanCel(s, e, 'btnConf2PopupCancel', 'ConfMsg2');
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientButton, 'hidDftBtn', '', {
+            'uniqueID': 'ctl00$hidDftBtn',
+            'isTextEmpty': true
+          }, {
+            'Click': function(s, e) {
+              e.processOnServer = false;
+            }
+          });
+
+          ASPx.createControl(dx.BootstrapClientTextBox, 'hidLoginInfo', '', {
+            'uniqueID': 'ctl00$hidLoginInfo',
+            'cssClasses': {}
+          }, {
+            'Init': hidLoginInfo_onInit
+          });
+
+
+        });
+        //
+        -->
+      </script>
+    </div>
+
+
+
+    <script type="text/javascript">
+      //<![CDATA[
+
+      WebForm_InitCallback();
+      WebForm_AutoFocus('hidDftBtn'); //]]>
+    </script>
+    <input type="hidden" name="DXScript"
+      value="1_11,1_252,1_12,1_23,1_64,1_13,1_14,1_15,1_182,23_0,23_1,23_31,1_60,23_32,1_183,1_184,1_185,1_21,1_22,1_190,1_192,1_17,23_39,1_194,23_38,23_30,1_186,23_37,1_193,23_35,1_19,1_213,1_224,1_225,1_211,1_227,1_236,1_238,1_239,1_230,1_234,1_240,23_11,23_12,23_18,1_49,1_41,23_8"><input
+      type="hidden" name="DXCss" value="23_79,23_85,1_74,1_75,1_68,1_69,1_70,1_73,../Content/bootstrap.css,../Content/dbt-icons.css,../Content/common.css,../Content/fontawesome.css,../Content/custom.css">
+  </form>
+
+  <div class="dxAIFME" role="application" aria-label=";">
+    <div id="dxPronouncer" role="note"></div>
+  </div>
+</body>
+
+</html>
