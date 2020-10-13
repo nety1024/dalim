@@ -1,0 +1,51 @@
+1. font 폴더에 아이콘 font 추가 (fontawesome)
+
+
+2. css에 fontawesome.css , custom.css 추가 (파일 로드는 cutom.css만 로드)
+
+
+3. input 필수입력 표시
+input 태그 다음에 오는 span 태그에 check_red css 적용
+<span class="check_red"></span><!--필수입력표시-->
+
+
+4. 아이콘 적용을 위해 아이콘이 들어가는 곳마다 태그 추가
+<i class="fas fa-pen mr5"></i> 형식
+
+도매주문요청.html 참조
+
+493행
+<i class="fas fa-folder-open"></i>Category</a>
+
+694행
+<span class="ham_menu"><i class="fas fa-bars"></i></span>
+
+766행
+<i class="fas fa-search mr5"></i>조회
+
+771행
+<i class="fas fa-pen mr5"></i>신규
+
+775행
+<i class="fas fa-save mr5"></i>저장
+
+779행
+<i class="fas fa-trash-alt mr5"></i>삭제
+
+783행
+<i class="fas fa-file-excel mr5"></i>엑셀
+
+790행
+<i class="fas fa-print mr5"></i>인쇄
+
+824행 (selectbox chevron-down 버튼)
+<i class="fas fa-chevron-down"></i></span>
+
+860행 돋보기 아이콘
+<i class="fas fa-search"></i>
+
+1025행 캘린더 아이콘 
+<i class="far fa-calendar-alt"></i></span>
+
+
+

@@ -1,0 +1,5 @@
+뱃지에 색상 넣기
+
+.dropdown-item .custom-badge {background:#007bff; color:#fff;}
+
+

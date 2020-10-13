@@ -1,0 +1,16 @@
+안에 불러오는 화면에서 input 높이가 100%로만 되는 문제
+dx.common.css
+.dx-texteditor-container {height:auto;} /*2020.09 수정*/
+
+로고영역 271열
+<a href="/Home/Index" class="logo" style="background:blue;height:80px;">
+
+탑영역278열
+<nav class="navbar navbar-static-top" style="background:red;height:80px;">
+
+좌측 네비영역 319열
+<aside class="main-sidebar" style="background:green;">
+
+본문영역 iframe 438열
+
+

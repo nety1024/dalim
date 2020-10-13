@@ -1,0 +1,14 @@
+1.
+<div style="left: 0px; top: 30px; width: 433px;" class="dxbs-dm dropdown_checkform" >
+dxbs-dm 뒤에 dropdown_checkform 추가
+
+2.  상단 '전체'를 감싸는 div
+<div class="dxbs-list-selectall-check form-check form-check-inline
+	<input class="form-check-input" type="checkbox" id="CallbackPanelBase_mainContent_MM0010_FormLayout1_cboPROD_TYPE_CD_listPROD_TYPE_CD_0_LBSACB_I">
+	<label class="form-check-label" for="CallbackPanelBase_mainContent_MM0010_FormLayout1_cboPROD_TYPE_CD_listPROD_TYPE_CD_0_LBSACB_I">
+form-check-inline2 추가
+
+3. li 안에 div
+<li id="CallbackPanelBase_mainContent_MM0010_FormLayout1_cboPROD_TYPE_CD_listPROD_TYPE_CD_0_LBI0">
+	<div class="list-group-item form-check form-check-inline form-check2" id="CallbackPanelBase_mainContent_MM0010_FormLayout1_cboPROD_TYPE_CD_listPROD_TYPE_CD_0_LBI0LBC">
+form-check2 추가

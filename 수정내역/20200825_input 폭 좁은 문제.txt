@@ -1,0 +1,11 @@
+가변일 때 아이패드에서 input 폭이 너무 좁은 문제 있음
+주문분류, 출고요청일 등의 input가 ipad 가로에서는 가로 폭이 너무 좁음.
+
+<div id="mainContent_WM0020_FormLayout1_0" class="col-md-3">
+
+에서  col-md-3을 col-md-4로 변경
+flex: 0 0 25%; --> flex: 0 0 33.333333%;
+<div id="mainContent_WM0020_FormLayout1_0" class="col-md-4">
+
+
+

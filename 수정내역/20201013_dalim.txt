@@ -1,0 +1,5 @@
+1. new 아이콘
+<span class="badge badge-danger">New</span>
+
+2. 첨부파일 아이콘
+<span class="far fa-file-image" style="margin-left:3px;">

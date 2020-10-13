@@ -1,0 +1,17 @@
+1. 로그인 화면 의문의 스크롤바
+
+푸터영역 우하단 이미지 마진값이 화면을 넘어서서 생기는 문제.
+margin-top:30px을 margin-top:26px으로 수정.
+
+.logo2{ width:200px;height:23px;background: url("./images/logo-white.png") 0 0 no-repeat;
+margin-top:26px;margin-left:auto;}
+
+
+
+2. 아이디저장에 백그라운드 칼라
+
+기존 badge라는 css에 백그라운드가 있어서 생기는 문제.
+login_box 안의 badge에는 백그라운드를 none으로 지정하여 없앰.
+
+.login_box .badge{background:none;color:#fff;margin:0;padding:0;border-radius:0;}
+

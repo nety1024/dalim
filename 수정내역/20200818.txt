@@ -1,0 +1,19 @@
+1. css가 DevExpress 전용 css와 부트스트랩이 섞여 있음.
+
+ DevExpress 전용 css는 다음과 같이 로드함.
+
+<link rel="stylesheet" href="/DXR.axd?r=23_79,23_85,23_138,1_74,1_75,1_68,1_69,1_70,1_73-eoual" />
+
+
+DevExpress 전용 css는 로컬에서 확인 및 편집이 불가능하기 때문에 
+다음과 같이 임시로 css로 변경해서 확인 가능.
+
+
+<link rel="stylesheet" href="../Content/DXR.css" />
+
+
+다만 아이콘을 DevExpress css에서 폰트 형식으로 불러오는데 폰트 아이콘을 인식 못하는 문제가 있음.
+
+탑부분 메뉴도 어째서인지 보이지 않음. 일부 css가 안먹는 모양.
+
+

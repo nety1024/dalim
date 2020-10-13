@@ -1,0 +1,33 @@
+1. 로그인 화면 모바일 화면 가로 모드
+
+가로 화면에서 footer 영역 올라가는 문제 있어 별도 가로모드 css 제작
+footer가 flex로 하단에 무조건 붙다보니 가로로 회전시키면 현재 화면의 하단에 붙어버림.
+가로모드에서는 display block, position: static 으로 처리. login_bgbox height를 auto로 변경
+
+
+2. 탑 화면 아이콘 및 UI
+
+로그인 아이콘 영역 오른쪽 상단에 아이콘 색깔 바꿀 필요 있음.
+현재 dev express에서 제공하는 svg 아이콘은 색깔 변경 불가.
+풀다운 메뉴 2개 배치하고 span 앞에
+<i class="fas fa-user"></i>
+<i class="fas fa-link"></i>
+배치 필요.
+
+그룹웨어 <i class="fas fa-users"></i>
+EIS  <i class="fas fa-sitemap"></i>
+e-HR <i class="fas fa-laptop-medical"></i>
+
+
+3. 각 화면 타이틀 바
+- 진행중
+
+
+4. 로그인 화면 배경이미지 > 규격 맞춰서 변환하여 전달 완료 png
+
+5. 파비콘 > 규격 맞춰서 전달 완료 16x16px png
+
+6. 로그인 화면 타이틀 텍스트 변경 - 다림시스템
+
+
+

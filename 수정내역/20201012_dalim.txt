@@ -1,0 +1,29 @@
+1. 
+
+<div class="dbt-widget-area dbt-tab-card card ">
+
+<div class="dxbs-widget-container dx-visibility-change-handler"><svg...
+
+.card에 있는 border가 적용되어 테두리 생김
+div 뒤에 style="border:none;"
+
+
+2. 
+<li class="nav-item dxbs-tab-current" role="presentation" id="ctl08_ctl00_AT0" style="">
+common.css
+.dbt-widget-tab-control > ul.nav-tabs, .dbt-widget-tab-control > ul.nav-tabs > li {
+margin-bottom: 0;
+
+li 뒤에  
+style="margin-bottom:-1px;"
+
+
+3. 
+
+<ul class="nav nav-tabs" role="tablist" id="ctl08_ctl00_TC">
+
+bootstrap에서 nav-tabs에     border-bottom: 1px solid #dee2e6;
+
+style="border-bottom:none;"
+
+

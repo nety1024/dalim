@@ -1,0 +1,12 @@
+form-check label 부분 수정
+- 가로 너비 30px로 지정해놓은 것이 문제가 있다고 함.
+
+.form-check label {width:30px;height: 30px;}
+
+이것을 아래와 같이 수정했다고 하여 반영.
+
+.form-check label {
+    height: 30px;
+    direction: rtl;
+    unicode-bidi: embed;
+}

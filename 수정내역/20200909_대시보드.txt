@@ -1,0 +1,29 @@
+1. 대시보드 레이아웃 변경 (그래프 형태)
+
+/* 대쉬보드2 */
+.white_box1{background: #fff;border:1px solid #dee2e6; height: 100px;}
+.dashbox_title2{text-align: center;color:#fff;padding:0;height:100px;float:left;width:35%;padding-left:5%;}
+.white_box2{padding:0; height: 100px;display:inline-block;width:65%; float:right;}
+.white_box2 .text1{font-size:12px;font-weight: bold;padding:5% 0 1px 15px;}
+.white_box2 .text2{text-align: right;font-size:14px;padding:0px 5px 10px 0;}
+.white_box2 .text3{font-size:24px;font-weight: bold;text-align: center;}
+.white_box2 .text3_title{font-size:16px;padding-top:20px;font-weight: bold;text-align: center;}
+
+/* 그래프 */
+.flex-wrapper {display: flex;flex-flow: row nowrap; }
+.single-chart {width: 100%; justify-content: center;height: 100%; margin:13px auto;}
+.circular-chart {display: block;  min-width: 100%;  height: 100%;}
+.circle-bg {  fill: none;  stroke: #eee;  stroke-width: 3.8;}
+.circle {  fill: none;  stroke-width: 2.8;  animation: progress 1s ease-out forwards;}
+@keyframes progress {
+  0% {    stroke-dasharray: 0 100;  }
+}
+.circular-chart.red .circle {  stroke: #dc3545;}
+.circular-chart.orange .circle {  stroke: #ff9f00;}
+.circular-chart.green .circle {  stroke: #4CC790;}
+.circular-chart.blue .circle {  stroke: #3c9ee5;}
+.percentage {  fill: #666;   font-family: sans-serif;  font-size: 0.5em;  text-anchor: middle;}
+
+
+2. 체크박스 다음에 오는 텍스트에 badge를 사용
+.form-check .badge {vertical-align: top;padding-top:10px;}

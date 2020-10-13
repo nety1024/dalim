@@ -1,0 +1,35 @@
+1.햄버거 크기
+기존 다임바이오텍 웹영업시스템과 통일
+
+
+2.우측상단의 사용자 및 링크 사이트
+기존 다임바이오텍 웹영업시스템과 통일
+
+
+3.상단의 높이
+상단 높이 변경시 반응형에서 문제 생김 > 변경 불가
+
+
+4.검색과 멀티창의 높이 일치
+351 라인 추가
+ <aside class="main-sidebar" style="padding-top:0;margin-top:50px; border-top:1px solid #ddd;">
+
+
+5.백그라운드 컬러
+기존 다임바이오텍 웹영업시스템과 통일
+.bg_background{background-color: #f1f1f1;}
+
+
+6.하단의 Copyright.....
+웅진 dalim으로 변경 완료
+
+
+7.상단 멀티페이지 밑에 검색 영역
+전체적으로 디자인 변경
+1) content-tabs 하단 굵은 검정선 없애고 자연스럽게 변경
+
+
+
+
+
+

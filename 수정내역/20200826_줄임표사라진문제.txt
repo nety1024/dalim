@@ -1,0 +1,12 @@
+테이블 전체가 안보일 때 오른쪽 끝에 ... 이 사라진 문제
+
+/* 인풋박스 아이콘 기존 삼각형 삭제 */
+/*
+.dropdown-toggle::after { margin-left: 0em;border:0;}
+.btn{line-height: 1;}
+.dxbs-icon-ellipsis::before {display:none;} <---  이부분
+*/
+
+인풋박스 아이콘 편집할 때 dxbs-icon-ellipsis::before을 보이지 않게 한 것이 원인으로 보임.
+dev express에서 아이콘 교체 하는 방식으로 했기 때문에 위의 css는 사실상 필요 없음.
+주석 처리함으로써 해결.
